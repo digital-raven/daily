@@ -30,7 +30,7 @@ setup(
     author='Raven',
     author_email='raven@rubicon.aleeas.com',
     packages=find_packages(exclude=['tests']),
-    license='Closed',
+    license='GPLv2',
     python_requires='>3, <4',
     install_requires=install_requires,
     data_files=[
