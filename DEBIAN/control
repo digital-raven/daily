@@ -1,0 +1,11 @@
+Package: daily
+Version: 0.0.0-alpha
+Section: base
+Priority: optional
+Architecture: all
+Build-Depends: dh-python
+Depends: python3, python3-argcomplete, python3-dateparser, python3-dateutil, python3-prettytable
+Maintainer: Bo Cimino <ciminobo@protonmail.com>
+Changed-By: Bo Cimino <ciminobo@protonmail.com>
+Description: daily
+ The command-line notebook for easily organized daily entries of all kinds.
