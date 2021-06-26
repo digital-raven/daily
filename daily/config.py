@@ -22,7 +22,7 @@ def get_defaults():
         configuration file.
     """
     return {
-        'journal_path': './journal.json',
+        'journal': './journal.json',
     }
 
 
@@ -32,7 +32,7 @@ def do_first_time_setup():
 
     # use these vals to create user config if not present in system defaults.
     default_vals = get_defaults()
-    default_vals['journal_path'] = '{}/.local/share/daily/journal.json'.format(Path.home())
+    default_vals['journal'] = '{}/.local/share/daily/journal.json'.format(Path.home())
 
     cp = configparser.ConfigParser()
 
@@ -56,7 +56,7 @@ def do_first_time_setup():
         cp.write(f)
 
     try:
-        dir_ = os.path.dirname(cp['default']['journal_path'])
+        dir_ = os.path.dirname(cp['default']['journal'])
         os.makedirs(dir_)
     except FileExistsError:
         pass
