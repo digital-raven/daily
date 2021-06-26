@@ -18,6 +18,7 @@ install_requires = []
 if 'DEBBUILD' not in os.environ:
     install_requires = [
         'argcomplete >= 1.0',
+        'parsedatetime',
     ]
 
 setup(
