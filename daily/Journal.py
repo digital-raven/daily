@@ -26,7 +26,7 @@ def get_title_from_date(date):
 
     days = ['Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat', 'Sun']
 
-    return '{}-{}-{}, {}'.format(d.year, d.month, d.day, days[d.weekday()])
+    return '{}-{:02d}-{:02d}, {}'.format(d.year, d.month, d.day, days[d.weekday()])
 
 
 class Journal:
@@ -41,6 +41,7 @@ class Journal:
 
         Raises:
             FileNotFoundError if the journal file doesn't exist.
+            PermissionError if the journal file couldn't be read.
 
             ValueError if an entry in the journal was invalid. The message
             will indicate which entry and the error.
@@ -88,7 +89,9 @@ class Journal:
             replace: If True, simply replace the whole entry with the new one.
 
         Returns:
-            An internal reference to the updated entry.
+            An internal reference to the updated entry. None will be returned
+            if the new entry contained no content. This means the entry was
+            deleted.
 
         Raises:
             ValueError if the title of the new entry could not be
@@ -105,9 +108,12 @@ class Journal:
 
         # Delete and replace the old entry in case title changed.
         del self[old_title]
-        self[entry.title] = entry
 
-        return entry
+        if entry.headings or entry.tags:
+            self[entry.title] = entry
+            return entry
+
+        return None
 
     def __getitem__(self, title):
         """ Get an entry or create one if it doesn't exist.
@@ -153,3 +159,7 @@ class Journal:
             title = get_title_from_date(title)
 
         del self.entries[title]
+
+    def __iter__(self):
+        for key in self.entries:
+            yield self[key]

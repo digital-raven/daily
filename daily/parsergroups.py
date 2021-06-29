@@ -10,19 +10,17 @@ def create_filter_opts():
         'filter options',
         'Filter for entries on the specified criteria.')
     group.add_argument(
-        '--after',
-        metavar='DATE',
+        '--after', metavar='DATE',
         help='Filter for transactions after this date.')
     group.add_argument(
-        '--before',
-        metavar='DATE',
+        '--before', metavar='DATE',
         help='Filter for entries after this date.')
     group.add_argument(
-        '-d, --date',
+        '-d, --date', metavar='DATE',
         help='The entry on this date.')
     group.add_argument(
         '--tags',
         help='Filter for entries with any of the mentioned tags.',
-        metavar='TAGS', default='')
+        metavar='TAG[,TAG... ,TAG]', default='')
 
     return parser

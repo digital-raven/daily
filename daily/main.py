@@ -28,7 +28,8 @@ def main():
         args.config = user_conf
 
     if not args.command:
-        args.command = 'show'
+        parser.print_help()
+        sys.exit(1)
 
     # fill in args with values from config.
     args = add_config_args(args, args.config)
