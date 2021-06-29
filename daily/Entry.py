@@ -191,6 +191,8 @@ class Entry:
         Raises:
             KeyError if a heading wasn't in self.headings.
         """
+        display = False
+
         headings = headings or []
         headings = [x.lower() for x in sorted(headings)] or self.headings
 
@@ -199,12 +201,14 @@ class Entry:
         s.append('=' * len(self.title))
 
         if 'notes' in headings:
+            display = True
             s.append(self.headings['notes'])
 
         for heading in headings:
-            if heading == 'notes':
+            if heading == 'notes' or heading not in self.headings:
                 continue
 
+            display = True
             s.append(heading.title())
             s.append('-' * len(heading))
             s.append(self.headings[heading])
@@ -214,7 +218,10 @@ class Entry:
         # Will become trailing newline
         s.append('')
 
-        return '\n'.join(s)
+        if display:
+            return '\n'.join(s)
+        else:
+            return ''
 
     def __eq__(self, o):
         return self.title == o.title
