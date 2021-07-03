@@ -145,7 +145,7 @@ class Entry:
 
         self.headings = {k.lower(): self.headings[k] for k in sorted(self.headings)}
 
-    def update(self, new_entry, exp_headings=None):
+    def update(self, new_entry, exp_headings=None, replace=False):
         """ Update an entry.
 
         The title and tags of this entry will be replaced, and new
@@ -167,11 +167,14 @@ class Entry:
         self.title = new_entry.title
         self.tags = new_entry.tags
 
-        for heading in exp_headings:
-            if heading not in new_entry.headings and heading in self.headings:
-                del(self.headings[heading])
+        if replace:
+            self.headings = new_entry.headings
+        else:
+            for heading in exp_headings:
+                if heading not in new_entry.headings and heading in self.headings:
+                    del(self.headings[heading])
 
-        self.headings.update(new_entry.headings)
+            self.headings.update(new_entry.headings)
 
         self.refresh()
 
