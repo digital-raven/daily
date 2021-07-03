@@ -71,18 +71,17 @@ class Journal:
             data = [v.__dict__ for v in sorted(list(self.entries.values()))]
             json.dump(data, f, indent=4)
 
-    def updateEntry(self, title, new_entry, exp_headings=None, replace=False):
+    def updateEntry(self, entry, new_entry, exp_headings=None, replace=False):
         """ Update an entry.
 
         The proper way to use this method is as follows..
 
-            entry = journal.updateEntry(entry.title, new_entry)
+            entry = journal.updateEntry(entry, new_entry)
 
         because the entry reference may be reassigned internally.
 
         Args:
-            title: Title of the entry to update. Must be a date
-                parsable by "parsedatetime".
+            title: The entry (or its title) to update.
             new_entry: New Entry instance containing the values to use.
             exp_headings: Expected headings. If not present in the new entry,
                 then they will be deleted from the current one.
@@ -95,59 +94,62 @@ class Journal:
             ValueError if the title of the new entry could not be
                 parsed as a date.
         """
-        entry = self.getOrCreateEntry(title)
+        title = entry
+        if type(title) == Entry:
+            title = entry.title
+
+        entry = self[title]
         old_title = entry.title
 
-        # test validity of new title
-        get_title_from_date(new_entry.title)
-
-        if replace:
-            entry = new_entry
-        else:
-            entry.update(new_entry, exp_headings)
+        entry.update(new_entry, exp_headings, replace)
 
         # Delete and replace the old entry in case title changed.
-        del(self.entries[old_title])
-        self.entries[entry.title] = entry
+        del self[old_title]
+        self[entry.title] = entry
 
         return entry
 
-    def getEntry(self, title):
-        """ Get an entry by its title.
+    def __getitem__(self, title):
+        """ Get an entry or create one if it doesn't exist.
 
         Args:
-            title: Must be a date parsable by "parsedatetime".
+            title: Can be an entry or the title of one.
 
         Returns:
-            The corresponding Entry, or None if it wasn't found.
+            The corresponding Entry for the title.
 
         Raises:
-            ValueError if the title coulud not be parsed.
+            ValueError if the title was invalid.
         """
+        if type(title) == Entry:
+            title = title.title
+
         try:
-            title = get_title_from_date(title)
             return self.entries[title]
         except KeyError:
-            return None
+            title = get_title_from_date(title)
 
-    def getOrCreateEntry(self, title):
-        """ Get or create an entry.
+            if title not in self.entries:
+                entry = Entry(title, headings={}, tags=[])
+                self.entries[title] = entry
+                return self.entries[title]
+            else:
+                return self.entries[title]
 
-        An entry will be created if it doesn't exist.
+    def __setitem__(self, title, entry):
+        if type(title) == Entry:
+            title = title.title
 
-        Args:
-            title: Title of the entry. Must be a date parsable
-                by "parsedatetime".
+        if title not in self.entries:
+            title = get_title_from_date(title)
 
-        Returns:
-            A new or existing Entry.
+        self.entries[title] = entry
 
-        Raises:
-            ValueError if the title coulud not be parsed.
-        """
-        entry = self.getEntry(title)
-        if not entry:
-            entry = Entry.createBlankEntry(get_title_from_date(title))
-            self.entries[entry.title] = entry
+    def __delitem__(self, title):
+        if type(title) == Entry:
+            title = title.title
 
-        return entry
+        if title not in self.entries:
+            title = get_title_from_date(title)
+
+        del self.entries[title]

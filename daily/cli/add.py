@@ -31,7 +31,12 @@ def do_add(args):
             print('ERROR: {}'.format(ve))
             sys.exit(1)
 
-    entry = journal.getOrCreateEntry(args.date)
+    try:
+        entry = journal[args.date]
+    except ValueError as ve:
+        print('ERROR: {}'.format(ve))
+        sys.exit(1)
+
     entry.addHeadings(args.headings)
 
     # Ensures an empty line is printed on the generated RST.
@@ -56,7 +61,7 @@ def do_add(args):
 
     try:
         entry = journal.updateEntry(
-            entry.title, Entry.createFromRst(text),
+            entry, Entry.createFromRst(text),
             args.headings, replace=not args.headings)
     except ValueError as ve:
         print('ERROR: Your new entry is invalid. {}'.format(ve))
