@@ -1,38 +1,30 @@
-import sys
+""" Main code for the "upcoming" subcommand.
 
-from daily.Journal import Journal, get_title_from_date
+This command is basically just "show", but with some preset filters.
+It shows entries between today and 2 weeks from now which contain the
+tag "events".
+"""
 
-
-def filter_func(entry, args):
-    """ Returns True if the entry satisfies the filters in args.
-    """
-    is_after = not args.after or args.after <= entry.title
-    is_before = not args.before or entry.title <= args.before
-
-    in_date = is_after and is_before
-    in_tags = not args.tags or any([x for x in args.tags if x in entry.tags])
-
-    return in_date and in_tags
+from daily.cli.show import do_show
+from daily.Journal import get_title_from_date, Journal
 
 
-def do_show(args):
-    journal = Journal()
-
-    args.tags = [x for x in args.tags.split(',') if x]
-
+def do_upcoming(args):
     if args.after:
         args.after = get_title_from_date(args.after)
     if args.before:
         args.before = get_title_from_date(args.before)
 
-    if not args.tags and not args.before and not args.after:
-        args.after = get_title_from_date('2 weeks ago')
-        args.before = get_title_from_date('today')
+    # default date range of +2 weeks
+    if not args.before and not args.after:
+        args.after = get_title_from_date('today')
+        args.before = get_title_from_date('2 weeks from now')
 
     if args.before and args.after and args.before < args.after:
         print('ERROR: The "before" date cannot be before the "after" date.')
         sys.exit(1)
 
+    journal = Journal()
     try:
         journal.load(args.journal)
     except FileNotFoundError as e:
@@ -45,5 +37,5 @@ def do_show(args):
         print('ERROR: Journal "{}" contains invalid JSON. {}'.format(args.journal, e))
         sys.exit(1)
 
-    entries = [x.getRst(args.headings) for x in journal if filter_func(x, args)]
+    entries = [x.getRst(['events']) for x in journal]
     print('\n'.join([x for x in entries if x]))

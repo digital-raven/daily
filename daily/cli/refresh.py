@@ -2,6 +2,7 @@ import sys
 
 from daily.Journal import Journal
 
+
 def do_refresh(args):
     old = Journal()
     new = Journal()
