@@ -58,4 +58,13 @@ def create_parser():
         'headings', metavar='HEADING', nargs='*',
         help='Only show entries made under the specified headings.')
 
+    # refresh command
+    sp = subparsers.add_parser(
+        'refresh',
+        help='Refresh a journal to weed out minor errors in bulk.')
+
+    sp.add_argument(
+        'headings', metavar='HEADING', nargs='*',
+        help='Only show entries made under the specified headings.')
+
     return parser
