@@ -150,6 +150,7 @@ class Journal:
             title = get_title_from_date(title)
 
         self.entries[title] = entry
+        entry.title = title
 
     def __delitem__(self, title):
         if type(title) == Entry:
