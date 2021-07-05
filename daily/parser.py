@@ -48,6 +48,15 @@ def create_parser():
         'headings', metavar='HEADING',
         help='Add (or modify) specific headings for an entry.', nargs='*')
 
+    # refresh command
+    sp = subparsers.add_parser(
+        'refresh',
+        help='Refresh a journal to weed out minor errors in bulk.')
+
+    sp.add_argument(
+        'headings', metavar='HEADING', nargs='*',
+        help='Only show entries made under the specified headings.')
+
     # show command
     sp = subparsers.add_parser(
         'show',
@@ -58,13 +67,13 @@ def create_parser():
         'headings', metavar='HEADING', nargs='*',
         help='Only show entries made under the specified headings.')
 
-    # refresh command
+    # upcoming command
     sp = subparsers.add_parser(
-        'refresh',
-        help='Refresh a journal to weed out minor errors in bulk.')
-
-    sp.add_argument(
-        'headings', metavar='HEADING', nargs='*',
-        help='Only show entries made under the specified headings.')
+        'upcoming',
+        help='Display upcoming events.',
+        description=(
+            'These are any entries with an "events" heading within the'
+            '(default) range of 2 weeks.'),
+        parents=[filter_opts])
 
     return parser
