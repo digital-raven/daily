@@ -11,11 +11,20 @@ Display entries from the journal
 SYNOPSIS
 ========
 
-**daily** [global-opts] **show** [options]
+**daily** [global-opts] **show** [options] [*HEADING* ...]
 
 DESCRIPTION
 ===========
-TBD
+Use this command to display entries from the Journal. Entries may be selected
+based on specific filters, but by default the entries from "today" and the
+previous 2 weeks will be shown.
+
+POSITIONAL ARGUMENTS
+====================
+
+*HEADING ...*
+        Add (or modify) specific headings for an entry. Only the listed
+        headings will be displayed. Headings are not case-sensitive.
 
 OPTIONS
 =======
@@ -25,16 +34,6 @@ These options must be specified after the subcommand.
         Display a help message and exit.
 
 .. include:: _daily-filter-opts.rst
-
-EXAMPLES
-========
-Some stuff will go here
-
-To log an example, do this
-
-::
-
-    daily show
 
 SEE ALSO
 ========
