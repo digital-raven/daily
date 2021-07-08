@@ -1,5 +1,5 @@
 Package: daily
-Version: 0.0.0-alpha
+Version: 0.1.0-alpha
 Section: base
 Priority: optional
 Architecture: all

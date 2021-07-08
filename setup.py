@@ -23,7 +23,7 @@ if 'DEBBUILD' not in os.environ:
 
 setup(
     name='daily',
-    version='0.0.0',
+    version='0.1.0-alpha',
     description='The ultimate command-line notebook.',
     long_description=long_description,
     long_description_content_type='text/markdown',
