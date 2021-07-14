@@ -1,18 +1,6 @@
 import sys
 
-from daily.Journal import Journal, get_title_from_date
-
-
-def filter_func(entry, args):
-    """ Returns True if the entry satisfies the filters in args.
-    """
-    is_after = not args.after or args.after <= entry.title
-    is_before = not args.before or entry.title <= args.before
-
-    in_date = is_after and is_before
-    in_tags = not args.tags or any([x for x in args.tags if x in entry.tags])
-
-    return in_date and in_tags
+from daily.Journal import Journal, entry_filter, get_title_from_date
 
 
 def do_show(args):
@@ -45,5 +33,5 @@ def do_show(args):
         print('ERROR: Journal "{}" contains invalid JSON. {}'.format(args.journal, e))
         sys.exit(1)
 
-    entries = [x.getRst(args.headings) for x in journal if filter_func(x, args)]
+    entries = [x.getRst(args.headings) for x in journal if entry_filter(x, args)]
     print('\n'.join([x for x in entries if x]))

@@ -16,7 +16,7 @@ def create_filter_opts():
         '--before', metavar='DATE',
         help='Filter for entries after this date.')
     group.add_argument(
-        '-d, --date', metavar='DATE',
+        '-d', '--date',
         help='The entry on this date.')
     group.add_argument(
         '--tags',

@@ -37,12 +37,8 @@ def create_parser():
 
     # add command
     sp = subparsers.add_parser(
-        'add', help='Add a new entry or modify an existing one.')
-
-    sp.add_argument(
-        '-d', '--date',
-        help='Select the entry for a specific date, instead of "today".',
-        default='today')
+        'add', help='Add a new entry or modify an existing one.',
+        parents=[filter_opts])
 
     sp.add_argument(
         'headings', metavar='HEADING',
