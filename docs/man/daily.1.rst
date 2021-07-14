@@ -43,7 +43,7 @@ JOURNAL FORMAT
 ==============
 Daily works by modifying and reading a journal file. It is not expected for a
 user to modify the journal file themselves; leave it to the "add" command.
-The journal file is in json format, and requires the following structure:
+The journal file is in json format, and follows the structure below.
 
 ::
 
@@ -57,6 +57,7 @@ The journal file is in json format, and requires the following structure:
             "tags": [
                 "work"
             ]
+            "id": "f559323bea5b7acf9f2e9e7ffd4871ff915e0956-2021-7-06_13-44-39-905973"
         },
         ...
     ]
@@ -74,7 +75,11 @@ entry would appear as follows:
     ----
     And some stuff happened at work.
 
+    id: f559323bea5b7acf9f2e9e7ffd4871ff915e0956-2021-7-19_13-44-39-905973
     tags: work
+
+And the "add" subcommand allows users to modify entries by editing the
+generated RST.
 
 FAQ
 ===

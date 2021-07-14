@@ -1,4 +1,7 @@
+import hashlib
 import json
+import re
+from datetime import datetime
 
 
 # Find heading points.
@@ -8,10 +11,53 @@ def _is_rst_heading(s):
             or s.startswith('-') and s.endswith('-'))
 
 
+def _get_headings_and_text(rst):
+    """ Separate out top-level headings and text.
+    """
+    headings = []
+    text = []
+
+    split = re.split('=+\n', rst)
+    split = [s.splitlines() for s in split]
+
+    headings.append(split[0][0])
+
+    for body in split[1:-1]:
+        text.append('\n'.join(body[:-1]))
+        headings.append(body[-1])
+
+    text.append('\n'.join(split[-1]))
+
+    return headings, text
+
+
+def get_entries_from_rst(rst):
+    if not rst.strip():
+        return []
+
+    entries = []
+    titles, contents = _get_headings_and_text(rst)
+
+    for t, c in zip(titles, contents):
+        entries.append(Entry.createFromRst('\n'.join([t, '===', c])))
+
+    return entries
+
+
+def _gen_id(title):
+    dt = datetime.today()
+    s = '{}-{}-{}_{}-{}-{}-{}'.format(
+        dt.year, dt.month, dt.day,
+        dt.hour, dt.minute, dt.second, dt.microsecond)
+    h = hashlib.sha1()
+    h.update(bytes(title + s, 'utf-8'))
+    return h.hexdigest() + '-' + s
+
+
 class Entry:
     """ Represents a single entry from a journal.
     """
-    def __init__(self, title, headings, tags):
+    def __init__(self, title, headings, tags, id_=None):
         """ Create a new entry.
 
         Args:
@@ -19,10 +65,15 @@ class Entry:
             headings: Dictionary of subheadings. Each heading is paired with
                 a string for its entry.
             tags: Set of tags for the entry at large.
+            id_: The entry's unique ID. If None, then one will be generated.
+                If this is provided, ensure it is unique.
         """
         self.title = title
         self.headings = {k.lower(): v for k, v in headings.items()}
         self.tags = tags
+        self.id = id_
+        if not self.id:
+            self.id = _gen_id(title)
 
         self.refresh()
 
@@ -63,7 +114,8 @@ class Entry:
             ValueError if d doesn't contain the expected fields.
         """
         try:
-            return Entry(d['title'], d['headings'], d['tags'])
+            id_ = d['id'] if 'id' in d else None
+            return Entry(d['title'], d['headings'], d['tags'], id_)
         except KeyError as ke:
             raise ValueError('Missing "title", "headings" or "tags" fields.')
 
@@ -105,6 +157,14 @@ class Entry:
             tags = sorted(list(set(tags)))
             rst = rst[:-1]
 
+        # ID should be on the second to last line. An ID will be generated if
+        # not present.
+        id_ = None
+        rst = '\n'.join(rst).strip().splitlines()
+        if rst[-1].strip().startswith('id:'):
+            id_ = rst[-1].replace(':', ' ').split()[1]
+            rst = rst[:-1]
+
         # Find the headings and content.
         heading_pts = [x - 1 for x, y in enumerate(rst) if _is_rst_heading(y)]
 
@@ -130,7 +190,7 @@ class Entry:
             content_end = heading_pts[ptr + 1]
             headings[heading] = '\n'.join(rst[content_start:content_end])
 
-        return Entry(title, headings, tags)
+        return Entry(title, headings, tags, id_)
 
     def refresh(self):
         """ Refresh tags and headings.
@@ -145,7 +205,7 @@ class Entry:
 
         self.headings = {k.lower(): self.headings[k] for k in sorted(self.headings)}
 
-    def update(self, new_entry, exp_headings=None, replace=False):
+    def update(self, new_entry, exp_headings=None):
         """ Update an entry.
 
         The title and tags of this entry will be replaced, and new
@@ -167,7 +227,7 @@ class Entry:
         self.title = new_entry.title
         self.tags = new_entry.tags
 
-        if replace:
+        if not exp_headings:
             self.headings = new_entry.headings
         else:
             for heading in exp_headings:
@@ -213,6 +273,7 @@ class Entry:
             s.append('-' * len(heading))
             s.append(self.headings[heading])
 
+        s.append('id: ' + self.id)
         s.append('tags: ' + ' '.join(self.tags))
 
         # Will become trailing newline

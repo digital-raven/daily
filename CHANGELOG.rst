@@ -6,6 +6,19 @@ All notable changes to daily will be documented in this file.
 The format is based on `Keep a Changelog <https://keepachangelog.com/en/1.0.0/>`_,
 and this project adheres to `Semantic Versioning <https://semver.org/spec/v2.0.0.html>`_.
 
+[Unreleased]
+============
+
+Added
+-----
+- Batch editing of entries.
+- Filter options to the "add" subcommand.
+- Entries now display with an ID. This ID may not be searched on This ID may not be searched on
+
+Fixed
+-----
+- Improper handling of `-d, --date` options in parsergroups.
+
 [0.1.0-alpha] - 2021-07-08
 ==========================
 First release of "daily". There are a couple of known bugs and the features are
