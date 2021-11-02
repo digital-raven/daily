@@ -18,6 +18,7 @@ Added
 Fixed
 -----
 - Improper handling of `-d, --date` options in parsergroups.
+- Package description in DEBIAN/control.
 
 [0.1.0-alpha] - 2021-07-08
 ==========================
