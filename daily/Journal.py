@@ -10,9 +10,17 @@ from daily.Entry import Entry
 def entry_filter(entry, args):
     """ Returns True if the entry satisfies the filters in args.
     """
-    is_after = not args.after or args.after <= entry.title
-    is_before = not args.before or entry.title <= args.before
-    is_date = entry.title == args.date if args.date else False
+    is_after = args.after and entry.title >= args.after
+    is_before = args.before and entry.title <= args.before
+    is_date = args.date and entry.title == args.date
+
+    if not any([args.after, args.before, args.date]):
+        is_after = is_before = is_date = True
+    else:
+        if args.before and not args.after:
+            is_after = True
+        if args.after and not args.before:
+            is_before = True
 
     in_date = (is_after and is_before) or is_date
     in_tags = not args.tags or any([x for x in args.tags if x in entry.tags])
