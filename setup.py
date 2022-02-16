@@ -27,7 +27,7 @@ version=sp.check_output(['git','describe','--tags'], text=True).strip()
 setup(
     name='daily',
     version=version,
-    description='The ultimate command-line notebook.',
+    description='The command-line notebook for daily entries.',
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='',
