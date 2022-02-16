@@ -3,7 +3,7 @@
 # help create distribution for daily.
 ################################################################################
 
-version="$(grep Version DEBIAN/control | awk '{print $2}')"
+version="$(git describe --tags)"
 pkgname="daily_$version"
 
 # Make man pages
@@ -16,6 +16,8 @@ then
     python3 setup.py bdist_wheel
 elif [ "$1" == "deb" ]
 then
+    cp DEBIAN/control.template DEBIAN/control
+    sed -i "s/REPLACE_VERSION/$version/" DEBIAN/control
     export DEBBUILD=1
     pybuild --build
     pybuild --install
