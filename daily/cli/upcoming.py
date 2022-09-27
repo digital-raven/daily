@@ -10,6 +10,10 @@ from daily.Journal import get_title_from_date, Journal
 
 
 def do_upcoming(args):
+    if args.entry_format not in ['rst', 'md']:
+        print(f'ERROR: The entry_format format needs to be either rst or md.')
+        sys.exit(1)
+
     if args.after:
         args.after = get_title_from_date(args.after)
     if args.before:
@@ -37,5 +41,10 @@ def do_upcoming(args):
         print('ERROR: Journal "{}" contains invalid JSON. {}'.format(args.journal, e))
         sys.exit(1)
 
-    entries = [x.getRst(['events']) for x in journal]
+    entries = []
+    if args.entry_format == 'rst':
+        entries = [x.getRst(['events']) for x in journal]
+    if args.entry_format == 'md':
+        entries = [x.getMd(['events']) for x in journal]
+
     print('\n'.join([x for x in entries if x]))

@@ -6,6 +6,10 @@ from daily.Journal import Journal, entry_filter, get_title_from_date
 def do_show(args):
     journal = Journal()
 
+    if args.entry_format not in ['rst', 'md']:
+        print(f'ERROR: The entry_format setting needs to be either rst or md.')
+        sys.exit(1)
+
     args.tags = [x for x in args.tags.split(',') if x]
 
     if args.date:
@@ -36,5 +40,10 @@ def do_show(args):
         print('ERROR: Journal "{}" contains invalid JSON. {}'.format(args.journal, e))
         sys.exit(1)
 
-    entries = [x.getRst(args.headings) for x in journal if entry_filter(x, args)]
+    entries = []
+    if args.entry_format == 'rst':
+        entries = [x.getRst(args.headings) for x in journal if entry_filter(x, args)]
+    elif args.entry_format == 'md':
+        entries = [x.getMd(args.headings) for x in journal if entry_filter(x, args)]
+
     print('\n'.join([x for x in entries if x]))

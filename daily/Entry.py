@@ -11,6 +11,11 @@ def _is_rst_heading(s):
             or s.startswith('-') and s.endswith('-'))
 
 
+def _is_md_heading(s):
+    s = s.strip()
+    return s.startswith('# ') or s.startswith('## ')
+
+
 def _get_headings_and_text(rst):
     """ Separate out top-level headings and text.
     """
@@ -29,6 +34,23 @@ def _get_headings_and_text(rst):
     text.append('\n'.join(split[-1]))
 
     return headings, text
+
+
+def get_entries_from_md(md):
+    """ Parse many entries out of markdown text.
+    """
+    if not md.strip():
+        return []
+
+    # Markdown entries are terminated by a line containing only this string.
+    end_str = '<!--- End Daily Entry --->'
+    texts = md.split(end_str)[:-1]
+    entries = []
+
+    for t in texts:
+        entries.append(Entry.createFromMd('\n'.join([t.strip(), end_str])))
+
+    return entries
 
 
 def get_entries_from_rst(rst):
@@ -120,8 +142,85 @@ class Entry:
             raise ValueError('Missing "title", "headings" or "tags" fields.')
 
     @classmethod
+    def createFromMd(cls, md):
+        """ Create a new Entry from markdown text.
+
+        The text will be parsed to derive key-value entries where the key
+        is the heading and the value is the subsequent text.
+
+        The title of the entry is expected to be a markdown level-1 heading
+        (# ) This is followed by the entry's notes, which is then
+        succeeded by the rest of the entry's headings, which are expected
+        to be RST level 2 headings (## ).
+
+        Args:
+            md: Markdown text from which to create the entry.
+
+        Returns:
+            A new Entry.
+
+        Raises:
+            ValueError if the markdown could not create a valid Entry.
+        """
+        md = md.strip().splitlines()
+
+        if not md:
+            raise ValueError('The entry was empty.')
+
+        ptr = 0
+
+        title = ''
+        headings = {}
+        tags = []
+
+        # Strip off ending string.
+        if md[-1] == '<!--- End Daily Entry --->':
+            md = md[:-1]
+
+        # Tags should be on the last line.
+        if md[-1].strip().startswith('tags:'):
+            tags = md[-1].replace(',', ' ').replace(':', ' ').split()[1:]
+            tags = sorted(list(set(tags)))
+            md = md[:-1]
+
+        # ID should be on the second to last line. An ID will be generated if
+        # not present.
+        id_ = None
+        md = '\n'.join(md).strip().splitlines()
+        if md[-1].strip().startswith('id:'):
+            id_ = md[-1].replace(':', ' ').split()[1]
+            md = md[:-1]
+
+        # Find the headings and content.
+        heading_pts = [x for x, y in enumerate(md) if _is_md_heading(y)]
+
+        # Find the title.
+        if not heading_pts:
+            raise ValueError('No title in entry.')
+
+        heading_pts.append(len(md))
+
+        title = ''.join(md[heading_pts[0]].split()[1:])
+
+        # Gather notes
+        headings['notes'] = '\n'.join(md[1:heading_pts[1]])
+
+        # ... and delete the "notes" entry if no notes were entered.
+        if not headings['notes'].strip():
+            del(headings['notes'])
+
+        # Get the rest
+        for ptr in range(1, len(heading_pts) - 1):
+            heading = ''.join(md[heading_pts[ptr]].split('##')[1:]).strip()
+            content_start = heading_pts[ptr] + 1
+            content_end = heading_pts[ptr + 1]
+            headings[heading] = '\n'.join(md[content_start:content_end])
+
+        return Entry(title, headings, tags, id_)
+
+    @classmethod
     def createFromRst(cls, rst):
-        """ Create a new Entry from RST text
+        """ Create a new Entry from RST text.
 
         The RST will be parsed to derive key-value entries where the key
         is the heading and the value is the subsequent text.
@@ -231,6 +330,42 @@ class Entry:
             self.headings.update(new_entry.headings)
 
         self.refresh()
+
+    def getMd(self, headings=None):
+        display = False
+
+        headings = headings or []
+        headings = headings or self.headings
+        headings = [x.lower() for x in headings]
+
+        s = []
+        s.append('# ' + self.title)
+
+        if 'notes' in headings:
+            display = True
+            s.append(self.headings['notes'])
+
+        # case-insensitive search
+        lookup_headings = {k.lower(): k for k in self.headings}
+        for heading in headings:
+            if heading == 'notes' or heading not in lookup_headings:
+                continue
+
+            display = True
+            s.append('## ' + lookup_headings[heading])
+            s.append(self.headings[lookup_headings[heading]])
+
+        s.append('id: ' + self.id)
+        s.append('tags: ' + ' '.join(self.tags))
+        s.append('<!--- End Daily Entry --->')
+
+        # Will become trailing newline
+        s.append('')
+
+        if display:
+            return '\n'.join(s)
+        else:
+            return ''
 
     def getRst(self, headings=None):
         """ Display this entry in RST format.

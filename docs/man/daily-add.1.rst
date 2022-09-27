@@ -19,13 +19,13 @@ ones.
 
 This command will search for entries which match the filter argumentsand open
 the text editor in the **EDITOR** or **VISUAL** environment variables to modify
-the entries. The entries will be displayed in RST format for editing. Then the
-user makes her edits and the resulting RST will be re-entered into the journal
-upon saving and exiting the text editor. If no filters were provided then it
-will be assumed the user wishes to create a new entry for the value of **-d,
---date**, which defaults to "today". If filters were provided, but no entries
-were found, then a message will be printed informing the user that no matching
-entries were found.
+the entries. The entries will be displayed in RST or MD format for editing.
+Then the user makes her edits and the resulting text will be re-entered into
+the journal upon saving and exiting the text editor. If no filters were
+provided then it will be assumed the user wishes to create a new entry for the
+value of **-d, --date**, which defaults to "today". If filters were provided,
+but no entries were found, then a message will be printed informing the user
+that no matching entries were found.
 
 The entries are expected in a certain format, but this command contains great
 conveniences to make adding entries easy. These are detailed further in the
@@ -56,7 +56,7 @@ the entry after the "tags:" keyboard. Don't forget the colon if adding this
 field manually.
 
 To add a new entry for "today", simply run ``daily add``, and some text like
-the following will be displayed in a text editor in RST format.
+the following will be displayed in a text editor in RST or MD format.
 
 Please note the auto-generated ID for the entry. Each entry will have one. **Do
 not modify this ID**. Deleting the ID is fine as long as the corresponding entry
@@ -72,7 +72,7 @@ is also deleted.
 
 Any text added immediately follwing the title will be stored under the "notes"
 heading. To add text under different headings, specify the heading as a
-level-2 RST heading as follows.
+level-2 RST or Markdown heading as follows.
 
 ::
 
@@ -124,7 +124,7 @@ would appear in the user's text editor. Headings are not case-sensitive.
     tags: workout
 
 It is possible to add other headings manually; simply follow the expected
-RST format. Non-existent headings may also be provided to the command, and they
+formats. Non-existent headings may also be provided to the command, and they
 will be created.
 
 To modify multiple entries, specify the filtering criterion. Let's filter for
