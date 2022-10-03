@@ -1,10 +1,9 @@
-import json
 import os
 from datetime import datetime
+from glob import glob
 
-import parsedatetime as pdt
-
-from daily.Entry import Entry
+from daily.Entry import Entry, get_entries_from_md, get_entries_from_rst
+from daily.parse_date import get_title_from_date
 
 
 def entry_filter(entry, args):
@@ -28,70 +27,74 @@ def entry_filter(entry, args):
     return in_date and in_tags
 
 
-def get_title_from_date(date):
-    """ Generate a more human-readable title.
-
-    Returns:
-        A string showing the date in Y-m-d format and the weekday.
-
-    Raises:
-        ValueError if date could not be parsed.
-    """
-    cal = pdt.Calendar(version=pdt.VERSION_FLAG_STYLE)
-    d, flag = cal.parse(date)
-
-    if not flag:
-        raise ValueError('The date "{}" could not be parsed.'.format(date))
-
-    d = datetime(*d[:3])
-
-    days = ['Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat', 'Sun']
-
-    return '{}-{:02d}-{:02d}, {}'.format(d.year, d.month, d.day, days[d.weekday()])
-
-
 class Journal:
-    def __init__(self):
-        self.entries = dict()  # Looked up by title
+    def __init__(self, entry_format='rst'):
+        self.entries = dict()  # Looked up by title.
+        self.modified = set()  # Only write modified entries to disk.
 
-    def load(self, journal):
+    def load(self, journal, entries=None, entry_format='rst'):
         """ Load entries from the specified journal.
 
         Args:
             journal: Path to the journal.
+            entries: Optional; List of dates to load. Entry names will
+                be written to disk as %Y-%m-%d.{jntry_format}
+            entry_format: rst or md
 
         Raises:
             FileNotFoundError if the journal file doesn't exist.
             PermissionError if the journal file couldn't be read.
 
-            ValueError if an entry in the journal was invalid. The message
-            will indicate which entry and the error.
+            ValueError if an entry in the journal contains an invalid entry.
+            The message will indicate which entry and the error.
         """
-        try:
-            with open(journal, 'r') as f:
-                data = json.load(f)
-        except json.decoder.JSONDecodeError as jde:
-            raise ValueError('Parsing the journal {}: {}'.format(journal, jde))
+        if entry_format not in ['md', 'rst']:
+            raise ValueError('entry_format must be rst or md.')
 
-        for entry, num in zip(data, range(1, len(data) + 1)):
+        match_ = f'[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9].{entry_format}'
+
+        entries = entries or glob(match_, root_dir=journal)
+
+        for entry in entries:
+            path = f'{journal}/{entry}'
+            with open(path) as f:
+                text = f.read()
+
+            new_entries = []
             try:
-                self.entries[entry['title']] = Entry.fromDict(entry)
-            except ValueError as ve:
-                raise ValueError('Entry {} is invalid. {}'.format(num, ve))
+                if entry_format == 'rst':
+                    new_entries = get_entries_from_rst(text)
+                elif entry_format == 'md':
+                    new_entries = get_entries_from_md(text)
 
-    def write(self, journal):
-        """ Write the journal to disk.
+            except ValueError as ve:
+                raise ValueError(f'Entry {path} is invalid: {ve}')
+
+            for new_entry in new_entries:
+                self.entries[new_entry.title] = new_entry
+
+    def write(self, journal, entry_format='rst'):
+        """ Write this journal to disk.
 
         Args:
-            journal: Path to the journal.
+            journal: Directory to write.
         """
-        dir_ = os.path.dirname(journal)
-        if dir_ and not os.path.isdir(dir_):
-            os.makedirs(dir_)
+        if entry_format not in ['md', 'rst']:
+            raise ValueError('entry_format must be rst or md.')
 
-        with open(journal, 'w') as f:
-            data = [v.__dict__ for v in sorted(list(self.entries.values()))]
-            json.dump(data, f, indent=4)
+        os.makedirs(journal, exist_ok=True)
+
+        for key in self.modified:
+            entry = self.entries[key]
+            name = get_title_from_date(entry.title, '%Y-%m-%d')
+            path = f'{journal}/{name}.{entry_format}'
+            with open(path, 'w') as f:
+                if entry_format == 'rst':
+                    f.write(entry.getRst(force=True))
+                elif entry_format == 'md':
+                    f.write(entry.getMd(force=True))
+
+        self.modified = set()
 
     def updateEntries(self, new_entries, exp_entries=None, exp_headings=None):
         """ Update or add a bunch of entries at once.
@@ -111,7 +114,8 @@ class Journal:
         # Compare IDs to determine which entries to delete
         del_entries = [x for x in exp_entries.values() if x.id not in new_entries]
 
-        # Delete removed entries.
+        # Delete removed entries. This won't delete the entries on disk; just
+        # prevent them from being updated.
         for entry in del_entries:
             del self[entry]
 
@@ -138,9 +142,7 @@ class Journal:
                 then they will be deleted from the current one.
 
         Returns:
-            An internal reference to the updated entry. None will be returned
-            if the new entry contained no content. This means the entry was
-            deleted.
+            An internal reference to the updated entry..
 
         Raises:
             ValueError if the title of the new entry could not be
@@ -158,12 +160,12 @@ class Journal:
 
         # Delete and replace the old entry in case title changed.
         del self[old_title]
+        if old_title in self.modified:
+            self.modified.remove(old_title)
 
-        if entry.headings or entry.tags:
-            self[entry.title] = entry
-            return entry
-
-        return None
+        self[entry.title] = entry
+        self.modified.add(entry.title)
+        return entry
 
     def __getitem__(self, title):
         """ Get an entry or create one if it doesn't exist.

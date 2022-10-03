@@ -16,7 +16,7 @@ user_conf = f'{user_confdir}/daily.ini'
 default = f"""\
 [default]
 # Path to journal
-journal = {home}/.local/share/daily/journal.json
+journal = {home}/.local/share/daily
 
 # Store entries as md or rst
 entry_format = rst
@@ -34,7 +34,7 @@ def get_defaults():
         configuration file.
     """
     return {
-        'journal': './journal.json',
+        'journal': f'journal = {home}/.local/share/daily',
         'entry_format': 'rst',
     }
 

@@ -36,37 +36,18 @@ These global options must be specified before the subcommand.
         format, and the default is at ~/.config/daily/daily.ini.
 
 **-j, --journal** *JOURNAL*
-        Specify the journal to operate on. The default journal file is located
-        in ~/.local/share/daily/journal.json.
+        Specify the directory to store entries. The default journal is located
+        in ~/.local/share/daily/
 
 **--version**
         Display the version of daily.
 
 JOURNAL FORMAT
 ==============
-Daily works by modifying and reading a journal file. It is not expected for a
-user to modify the journal file themselves; leave it to the "add" command.
-The journal file is in json format, and follows the structure below.
-
-::
-
-    [
-        {
-            "title": "2021-07-06, Tues",
-            "headings": {
-                "notes": "Notes appear just below the title.",
-                "work": "And some stuff happened at work."
-            },
-            "tags": [
-                "work"
-            ]
-            "id": "f559323bea5b7acf9f2e9e7ffd4871ff915e0956-2021-7-06_13-44-39-905973"
-        },
-        ...
-    ]
-
-When displayed back, daily will format these entries into RST or markdown text.
-The above entry would appear as follows:
+Daily works by modifying and reading a entries from a directory. It is not
+expected for a user to modify the journal file themselves; leave it to the
+"add" command. The journal file is in json format, and follows the structure
+below.
 
 ::
 
@@ -88,7 +69,7 @@ FAQ
 ===
 
 How do you say "hello" in Spanish?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+----------------------------------
 "Donde hello".
 
 SEE ALSO

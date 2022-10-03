@@ -44,7 +44,8 @@ def do_upcoming(args):
     entries = []
     if args.entry_format == 'rst':
         entries = [x.getRst(['events']) for x in journal]
-    if args.entry_format == 'md':
+    elif args.entry_format == 'md':
         entries = [x.getMd(['events']) for x in journal]
 
+    entries = sorted([x.getRst(['events']) for x in journal])
     print('\n'.join([x for x in entries if x]))
