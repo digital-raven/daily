@@ -39,16 +39,20 @@ def _get_headings_and_text(rst):
 def get_entries_from_md(md):
     """ Parse many entries out of markdown text.
     """
-    if not md.strip():
+    md = md.strip()
+    if not md:
         return []
 
     # Markdown entries are terminated by a line containing only this string.
-    end_str = '<!--- End Daily Entry --->'
-    texts = md.split(end_str)[:-1]
+    end_str = '<!--- Break --->'
+    texts = md.split(end_str)
+    if not texts[-1]:
+        texts.pop()
+
     entries = []
 
     for t in texts:
-        entries.append(Entry.createFromMd('\n'.join([t.strip(), end_str])))
+        entries.append(Entry.createFromMd(t))
 
     return entries
 
@@ -64,6 +68,51 @@ def get_entries_from_rst(rst):
         entries.append(Entry.createFromRst('\n'.join([t, '===', c])))
 
     return entries
+
+
+def str_to_entries(text, entry_format):
+    """ Convert a str to a list of entries.
+
+    The return from this function can be passed to entries_to_str.
+
+    Args:
+        text: Text to convert to entries.
+        entry_format: 'rst' or 'md'.
+
+    Returns:
+        A list of Entry references.
+    """
+    entries = []
+    if entry_format == 'rst':
+        entries = get_entries_from_rst(text)
+    elif entry_format == 'md':
+        entries = get_entries_from_md(text)
+
+    return entries
+
+
+def entries_to_str(entries, entry_format, headings=None):
+    """ Return many entries as a str.
+
+    The output from this function can be passed to str_to_entries.
+
+    Args:
+        entries: List of entries to print.
+        entry_format: 'rst' or 'md'.
+
+    Returns:
+        A str representing the entries
+    """
+    text = ''
+    if entry_format == 'rst':
+        text = [x.getRst(headings) for x in entries]
+        text = '\n\n\n'.join(sorted([x for x in text if x]))
+    elif entry_format == 'md':
+        end_str = '<!--- Break --->'
+        text = [x.getMd(headings) for x in entries]
+        text = f'{end_str}\n\n\n'.join(sorted([x for x in text if x]))
+
+    return text
 
 
 def _gen_id(title):
@@ -172,10 +221,6 @@ class Entry:
         title = ''
         headings = {}
         tags = []
-
-        # Strip off ending string.
-        if md[-1] == '<!--- End Daily Entry --->':
-            md = md[:-1]
 
         # Tags should be on the last line.
         if md[-1].strip().startswith('tags:'):
@@ -361,7 +406,7 @@ class Entry:
 
         s.append('id: ' + self.id)
         s.append('tags: ' + ' '.join(self.tags))
-        s.append('<!--- End Daily Entry --->')
+        s.append('')
 
         if display or force:
             return '\n'.join(s)

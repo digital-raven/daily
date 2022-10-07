@@ -1,6 +1,7 @@
 import sys
 
-from daily.Journal import Journal, entry_filter, get_title_from_date
+from daily.Journal import Journal, get_title_from_date
+from daily.Entry import entries_to_str
 
 
 def do_show(args):
@@ -40,10 +41,5 @@ def do_show(args):
         print('ERROR: Journal "{}" contains invalid JSON. {}'.format(args.journal, e))
         sys.exit(1)
 
-    entries = []
-    if args.entry_format == 'rst':
-        entries = sorted([x.getRst(args.headings) for x in journal if entry_filter(x, args)])
-    elif args.entry_format == 'md':
-        entries = sorted([x.getMd(args.headings) for x in journal if entry_filter(x, args)])
-
-    print('\n\n\n'.join([x for x in entries if x]))
+    entries = journal.getEntries(args)
+    print(entries_to_str(entries, args.entry_format, args.headings))
