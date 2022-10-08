@@ -15,6 +15,8 @@ multiline
 id: today-id
 tags: birthday
 
+.. end-entry
+
 tomorrow
 ========
 Tomorrow is tomorrow
