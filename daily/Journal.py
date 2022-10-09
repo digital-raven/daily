@@ -1,9 +1,9 @@
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 from glob import glob
 
 from daily.Entry import Entry, get_entries_from_md, get_entries_from_rst
-from daily.parse_date import get_title_from_date
+from daily.parse_date import get_title_from_date, parse_date
 
 
 def entry_filter(entry, args):
@@ -69,11 +69,21 @@ class Journal:
                     new_entries = get_entries_from_rst(text)
                 elif entry_format == 'md':
                     new_entries = get_entries_from_md(text)
-
             except ValueError as ve:
                 raise ValueError(f'Entry {path} is invalid: {ve}')
 
             for new_entry in new_entries:
+
+                # Add links to tomorrow and yesterday's entries.
+                d = parse_date(new_entry.title)
+                diff = timedelta(days=1)
+                if 'tomorrow' not in new_entry.attrs:
+                    tomorrow = d + diff
+                    new_entry.attrs['tomorrow'] = tomorrow.strftime(f'%Y-%m-%d.{entry_format}')
+                if 'yesterday' not in new_entry.attrs:
+                    yesterday = d - diff
+                    new_entry.attrs['yesterday'] = yesterday.strftime(f'%Y-%m-%d.{entry_format}')
+
                 self.entries[new_entry.title] = new_entry
 
     def write(self, journal, entry_format='rst'):
