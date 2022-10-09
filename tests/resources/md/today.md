@@ -9,5 +9,8 @@ heading body
 
 multiline
 
-id: today-id
-tags: birthday
+<!--- attributes --->
+    ---
+    id: today-id
+    tags:
+      - birthday

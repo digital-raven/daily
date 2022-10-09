@@ -1,5 +1,7 @@
 # tomorrow
 Tomorrow is tomorrow
 
-id: tomorrow-id
-tags: 
+<!--- attributes --->
+    ---
+    id: tomorrow-id
+    tags: 
