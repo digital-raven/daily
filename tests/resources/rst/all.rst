@@ -12,8 +12,12 @@ heading body
 
 multiline
 
-id: today-id
-tags: birthday
+.. code-block:: yaml
+
+    ---
+    id: today-id
+    tags: 
+      - birthday
 
 .. end-entry
 
@@ -21,6 +25,9 @@ tomorrow
 ========
 Tomorrow is tomorrow
 
-id: tomorrow-id
-tags: 
+.. code-block:: yaml
+
+    ---
+    id: tomorrow-id
+    tags: 
 

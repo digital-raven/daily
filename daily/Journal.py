@@ -22,7 +22,7 @@ def entry_filter(entry, args):
             is_before = True
 
     in_date = (is_after and is_before) or is_date
-    in_tags = not args.tags or any([x for x in args.tags if x in entry.tags])
+    in_tags = not args.tags or any([x for x in args.tags if x in entry.attrs['tags']])
 
     return in_date and in_tags
 
@@ -119,11 +119,11 @@ class Journal:
         """
         exp_entries = exp_entries or []
 
-        new_entries = {x.id: x for x in new_entries}
-        exp_entries = {x.id: x for x in exp_entries}
+        new_entries = {x.attrs['id']: x for x in new_entries}
+        exp_entries = {x.attrs['id']: x for x in exp_entries}
 
         # Compare IDs to determine which entries to delete
-        del_entries = [x for x in exp_entries.values() if x.id not in new_entries]
+        del_entries = [x for x in exp_entries.values() if x.attrs['id'] not in new_entries]
 
         # Delete removed entries. This won't delete the entries on disk; just
         # prevent them from being updated.
@@ -199,7 +199,7 @@ class Journal:
             title = get_title_from_date(title)
 
             if title not in self.entries:
-                entry = Entry(title, headings={}, tags=[])
+                entry = Entry(title, headings={}, attrs={})
                 self.entries[title] = entry
                 return self.entries[title]
             else:

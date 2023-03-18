@@ -20,6 +20,7 @@ if 'DEBBUILD' not in os.environ:
     install_requires = [
         'argcomplete >= 1.0',
         'parsedatetime==2.5',
+        'pyyaml',
     ]
 
 version=sp.check_output(['git','describe','--tags'], text=True).strip()

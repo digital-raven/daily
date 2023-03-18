@@ -21,8 +21,8 @@ class TestEntry(unittest.TestCase):
         self.assertEqual('Today is today\n', entry.headings['notes'])
         self.assertEqual('heading body\n', entry.headings['today heading'])
         self.assertEqual('heading body\n\nmultiline\n', entry.headings['second heading'])
-        self.assertEqual('today-id', entry.id)
-        self.assertEqual(['birthday'], entry.tags)
+        self.assertEqual('today-id', entry.attrs['id'])
+        self.assertEqual(['birthday'], entry.attrs['tags'])
 
     def test_basic_md_parsing(self):
         """ Single md entry.
@@ -37,8 +37,8 @@ class TestEntry(unittest.TestCase):
         self.assertEqual('Today is today\n', entry.headings['notes'])
         self.assertEqual('heading body\n', entry.headings['today heading'])
         self.assertEqual('heading body\n\nmultiline\n', entry.headings['second heading'])
-        self.assertEqual('today-id', entry.id)
-        self.assertEqual(['birthday'], entry.tags)
+        self.assertEqual('today-id', entry.attrs['id'])
+        self.assertEqual(['birthday'], entry.attrs['tags'])
 
     def test_compound_rst_parsing(self):
         """ Multiple entries in one file.

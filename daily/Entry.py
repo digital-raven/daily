@@ -3,6 +3,8 @@ import json
 import re
 from datetime import datetime
 
+import yaml
+
 
 rst_sep = '.. end-entry'
 md_sep = '<!--- end-entry --->'
@@ -113,23 +115,24 @@ def _gen_id(title):
 class Entry:
     """ Represents a single entry from a journal.
     """
-    def __init__(self, title, headings, tags, id_=None):
+    def __init__(self, title, headings, attrs):
         """ Create a new entry.
 
         Args:
             title: Title of the entry.
             headings: Dictionary of subheadings. Each heading is paired with
                 a string for its entry.
-            tags: Set of tags for the entry at large.
-            id_: The entry's unique ID. If None, then one will be generated.
-                If this is provided, ensure it is unique.
+            attrs: Dictionary of metadata for the entry.
         """
         self.title = title
         self.headings = {k: v for k, v in headings.items()}
-        self.tags = tags
-        self.id = id_
-        if not self.id:
-            self.id = _gen_id(title)
+        self.attrs = attrs
+
+        if 'id' not in self.attrs or not self.attrs['id'].strip():
+            self.attrs['id'] = _gen_id(title)
+
+        if 'tags' not in self.attrs or not self.attrs['tags']:
+            self.attrs['tags'] = []
 
         self.refresh()
 
@@ -144,8 +147,6 @@ class Entry:
             if heading not in self.headings:
                 self.headings[heading] = ''
 
-        self.refresh()
-
     @classmethod
     def createBlankEntry(cls, title):
         """ Create a blank entry. Still needs a title.
@@ -153,27 +154,7 @@ class Entry:
         Args:
             title: Title of the entry.
         """
-        return Entry(title, dict(), [])
-
-    @classmethod
-    def fromDict(cls, d):
-        """ Init an entry from a dict.
-
-        Args:
-            d: The dict to create the entry from. Needs to have "title",
-                "headings", and a "tags" field per the Entry.__init__ method.
-
-        Returns:
-            A new Entry.
-
-        Raises:
-            ValueError if d doesn't contain the expected fields.
-        """
-        try:
-            id_ = d['id'] if 'id' in d else None
-            return Entry(d['title'], d['headings'], d['tags'], id_)
-        except KeyError as ke:
-            raise ValueError('Missing "title", "headings" or "tags" fields.')
+        return Entry(title, dict(), dict())
 
     @classmethod
     def createFromMd(cls, md):
@@ -196,7 +177,7 @@ class Entry:
         Raises:
             ValueError if the markdown could not create a valid Entry.
         """
-        md = md.strip().splitlines()
+        md = md.strip()
 
         if not md:
             raise ValueError('The entry was empty.')
@@ -205,21 +186,15 @@ class Entry:
 
         title = ''
         headings = {}
-        tags = []
 
-        # Tags should be on the last line.
-        if md[-1].strip().startswith('tags:'):
-            tags = md[-1].replace(',', ' ').replace(':', ' ').split()[1:]
-            tags = sorted(list(set(tags)))
-            md = md[:-1]
+        attr_header = '<!--- attributes --->'
+        md = md.split(attr_header)
+        if len(md) == 1:
+            md.append('')
 
-        # ID should be on the second to last line. An ID will be generated if
-        # not present.
-        id_ = None
-        md = '\n'.join(md).strip().splitlines()
-        if md[-1].strip().startswith('id:'):
-            id_ = md[-1].replace(':', ' ').split()[1]
-            md = md[:-1]
+        # split out attrs and actual entry text
+        attrs = yaml.safe_load(md[-1].strip())
+        md = attr_header.join(md[:-1]).splitlines()
 
         # Find the headings and content.
         heading_pts = [x for x, y in enumerate(md) if _is_md_heading(y)]
@@ -246,7 +221,7 @@ class Entry:
             content_end = heading_pts[ptr + 1]
             headings[heading] = '\n'.join(md[content_start:content_end])
 
-        return Entry(title, headings, tags, id_)
+        return Entry(title, headings, attrs)
 
     @classmethod
     def createFromRst(cls, rst):
@@ -269,7 +244,7 @@ class Entry:
         Raises:
             ValueError if the RST could not create a valid Entry.
         """
-        rst = rst.strip().splitlines()
+        rst = rst.strip()
 
         if not rst:
             raise ValueError('The entry was completely empty.')
@@ -278,21 +253,14 @@ class Entry:
 
         title = ''
         headings = {}
-        tags = []
 
-        # Extract the tags first, if present. They should be on the last line.
-        if rst[-1].strip().startswith('tags:'):
-            tags = rst[-1].replace(',', ' ').replace(':', ' ').split()[1:]
-            tags = sorted(list(set(tags)))
-            rst = rst[:-1]
+        attr_header = '.. code-block:: yaml'
+        rst = rst.split(attr_header)
+        if len(rst) == 1:
+            rst.append('')
 
-        # ID should be on the second to last line. An ID will be generated if
-        # not present.
-        id_ = None
-        rst = '\n'.join(rst).strip().splitlines()
-        if rst[-1].strip().startswith('id:'):
-            id_ = rst[-1].replace(':', ' ').split()[1]
-            rst = rst[:-1]
+        attrs = yaml.safe_load(rst[-1].strip())
+        rst = attr_header.join(rst[:-1]).splitlines()
 
         # Find the headings and content.
         heading_pts = [x - 1 for x, y in enumerate(rst) if _is_rst_heading(y)]
@@ -319,14 +287,14 @@ class Entry:
             content_end = heading_pts[ptr + 1]
             headings[heading] = '\n'.join(rst[content_start:content_end])
 
-        return Entry(title, headings, tags, id_)
+        return Entry(title, headings, attrs)
 
     def refresh(self):
-        """ Refresh tags and headings.
+        """ Make minor corrections
 
         Tags should be sorted.
         """
-        self.tags = sorted(list(set([x for x in self.tags])))
+        self.attrs['tags']= sorted(list(set([x for x in self.attrs['tags']])))
 
     def update(self, new_entry, exp_headings=None):
         """ Update an entry.
@@ -348,7 +316,7 @@ class Entry:
 
         # Update this entry.
         self.title = new_entry.title
-        self.tags = new_entry.tags
+        self.attrs['tags'] = new_entry.attrs['tags']
 
         if not exp_headings:
             self.headings = new_entry.headings
@@ -389,8 +357,9 @@ class Entry:
         if not display and force:
             s.append('')
 
-        s.append('id: ' + self.id)
-        s.append('tags: ' + ' '.join(self.tags))
+        # Append the attributes
+        s.append('<!--- attributes --->')
+        s += ['    ' + x for x in ['---'] + yaml.dump(self.attrs).splitlines()]
         s.append('')
 
         if display or force:
@@ -441,8 +410,10 @@ class Entry:
         if not display and force:
             s.append('')
 
-        s.append('id: ' + self.id)
-        s.append('tags: ' + ' '.join(self.tags))
+        # Append the attributes
+        s.append('.. code-block:: yaml')
+        s.append('')
+        s += ['    ' + x for x in ['---'] + yaml.dump(self.attrs).splitlines()]
 
         # Will become trailing newline
         s.append('')

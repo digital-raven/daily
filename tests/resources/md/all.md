@@ -9,12 +9,18 @@ heading body
 
 multiline
 
-id: today-id
-tags: birthday
+<!--- attributes --->
+    ---
+    id: today-id
+    tags:
+      - birthday
+
 <!--- end-entry --->
 
 # tomorrow
 Tomorrow is tomorrow
 
-id: tomorrow-id
-tags: 
+<!--- attributes --->
+    ---
+    id: tomorrow-id
+    tags: 

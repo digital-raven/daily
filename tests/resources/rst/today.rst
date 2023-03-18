@@ -12,6 +12,9 @@ heading body
 
 multiline
 
-id: today-id
-tags: birthday
+.. code-block:: yaml
 
+    ---
+    id: today-id
+    tags:
+      - birthday
