@@ -39,6 +39,9 @@ These global options must be specified before the subcommand.
         Specify the journal to operate on. The default journal file is located
         in ~/.local/share/daily/journal.json.
 
+**--version**
+        Display the version of daily.
+
 JOURNAL FORMAT
 ==============
 Daily works by modifying and reading a journal file. It is not expected for a

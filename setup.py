@@ -1,4 +1,5 @@
 import os
+import subprocess as sp
 from setuptools import setup, find_packages
 from os import path
 
@@ -21,9 +22,11 @@ if 'DEBBUILD' not in os.environ:
         'parsedatetime',
     ]
 
+version=sp.check_output(['git','describe','--tags'], text=True).strip()
+
 setup(
     name='daily',
-    version='0.1.0-alpha',
+    version=version,
     description='The ultimate command-line notebook.',
     long_description=long_description,
     long_description_content_type='text/markdown',

@@ -2,8 +2,18 @@
 """
 
 import argparse
+import sys
 
+from daily import __version__
 from daily.parsergroups import create_filter_opts
+
+
+def print_version():
+    class printVersion(argparse.Action):
+        def __call__(self, parser, args, values, option_string=None):
+            print(__version__)
+            sys.exit(0)
+    return printVersion
 
 
 def create_parser():
@@ -28,6 +38,10 @@ def create_parser():
     parser.add_argument(
         '-j', '--journal',
         help='Specify the journal to operate on.')
+
+    parser.add_argument(
+        '--version', nargs=0, help='Print the version of daily and exit.',
+        action=print_version())
 
     # begin subparsers
     subparsers = parser.add_subparsers(
