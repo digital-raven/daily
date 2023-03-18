@@ -6,6 +6,24 @@ All notable changes to daily will be documented in this file.
 The format is based on `Keep a Changelog <https://keepachangelog.com/en/1.0.0/>`_,
 and this project adheres to `Semantic Versioning <https://semver.org/spec/v2.0.0.html>`_.
 
+[0.3.0] - 2022-08-25
+====================
+Nothing major happend in this release, but I did modify an existing feature
+in a backwards compaible way.
+
+Added
+-----
+- Split out subparser subcommand functions.
+
+Changed
+-------
+- Headings will no longer be auto sorted during output, nor will they be
+  auto-upcased or down-cased. They will also no longer be automatically added
+  to tags. Searching for headings remains case-insensitive though.
+- The reason for the above change is that trying to create structure or order
+  for a reasonably complicated daily entry was made impossible by the above
+  "feature". So it was removed.
+
 [0.2.0] - 2022-02-18
 ====================
 This release adds the ability to perform batch additions / editing of entries,
