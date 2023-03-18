@@ -25,7 +25,7 @@ wheels/
 *.egg
 MANIFEST
 
-*.deb
+daily*.deb
 .pybuild/
 daily_*/
 debian/
