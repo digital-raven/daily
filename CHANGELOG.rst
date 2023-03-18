@@ -6,6 +6,68 @@ All notable changes to daily will be documented in this file.
 The format is based on `Keep a Changelog <https://keepachangelog.com/en/1.0.0/>`_,
 and this project adheres to `Semantic Versioning <https://semver.org/spec/v2.0.0.html>`_.
 
+[1.0.0] - 2022-12-05
+====================
+There are many changes to entry format from 0.4.0 to 1.0.0 . Porting entries
+from previous versions of daily to 1.0.0 will require some work on part of
+the user.
+
+The main reason for this is compatibility with vimwiki, which has its own
+complement of daily entry tools that store the entries in individual files, and
+daily should not exclude the user from using these tools with their own entries.
+
+The following are the general list of changes to individual entry format.
+
+- No special separation strings are needed at the end of entry files. These will
+  be generated automatically when displaying or editing multiple entries.
+- RST titles are now level 1, proper titles with ``===`` borders on both above
+  and below lines.
+- The data at the bottom of an entry may now be arbitrarily stored in yaml
+  format. daily has no tools to query based on these arbitrary information, but
+  they will become available in a backwards compatible way.
+- This data will now be properly displayed as a code-block when rendering.
+
+The other features are preserved; per-heading display / editing, batch
+editing of entries, etc...
+
+To port your entries from an older version, run ``daily add`` with 1.0.0 to see
+the new format, export your previous entries to plain text using ``daily show``
+with the older version of daily, and massage the text however you need before
+importing it with ``daily add`` aagin from version 1.0.0. Be sure to maintain
+backups throughout this process. These are plaintext files; not reason not to
+version with git.
+
+Added
+-----
+- Command-line option to set entry format.
+- Adding vim template generator and instructions.
+- no_edit function. This can be used to generate a blank entry to stdout.
+  Useful when combined with aforementioned vim template.
+- General unit tests.
+- Entries may now have arbitrary data stored at the end in yaml format.
+
+Changed
+-------
+- BIG ONE: Individual files for entries.
+- Totally changed expected entry format.
+- Up-level RST headings.RST entries now use RST title blocks for the title
+  rather than the `===` underline. Headings now use the `===` instead of `---`.
+- Documentation updates.
+- The temp file used by the editor is now created in the journal dir instead
+  of /tmp. This ensures outbound file links will remain valid when the entry
+  is complete.
+- The "upcoming" command now looks for the "todo" heading instead of "events".
+- Attributes are now displayed in a code block when the text is rendered.
+- RST entries are now separated by break comments like md, and the MD entry
+  separator is now ``<!--- end-entry --->``
+
+Removed
+-------
+- Daily will no longer delete entries when those entries are removed during
+  batch editing. This was necessary to conveniently remove entries when they
+  were stored in a single json, but now users can use their own filesystem
+  tools to remove entries.
+
 [0.4.0] - 2022-09-28
 ====================
 Added support for markdown. Markdown can be used by setting a line in daily's

@@ -54,7 +54,20 @@ markdown files in the vimwiki diary directory.
 
 Usage
 =====
-Usage is detailed in the man pages under ``./doc/man``.
+Usage is detailed in the man pages under ``./doc/man``. Start with ``daily.1``,
+but a general quick start cookbook...
+
+::
+
+    daily  # Perform first-time setup
+    daily add  # Edit today's entry.
+    daily show  # Show previous 2 weeks of entries
+    daily add -d yesterday  # Add or edit an entry on a specific date.
+    daily add --before today  # Batch edit any entries before today
+    daily show workout todo  # Show only specific headings for entries
+    daily add workout  # Edit specific headings for an entry.
+
+    daily upcoming  # Print next 2 weeks of todos
 
 Required packages for a developer
 =================================
@@ -66,11 +79,16 @@ this operating system.
 
     python3-venv python3-pip dh-python docutils-common
 
-Maintenance
-===========
+Maintenance and versioning
+==========================
 Update the CHANGELOG when cutting a new release, then create and push a git tag
 named after the new version. This project's packaging script and setup.py will
 automatically determine the version based on git-describe.
+
+Daily uses `semantic versioning <https://semver.org/>`_. Update the major
+number if a breaking change is introduced with respect to the command-line
+interface or expected entry format. Minor number for backwards-compatible
+feature additions, and patch number for bugfixes or optimizations.
 
 Building and installation
 =========================
@@ -91,6 +109,8 @@ commands.
 
     # Clean the directory.
     ./package.bash clean
+
+Alternatively just clone this repo use pip to install to a virtual environment.
 
 Testing and developer usage
 ===========================
