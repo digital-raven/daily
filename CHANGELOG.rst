@@ -6,8 +6,13 @@ All notable changes to daily will be documented in this file.
 The format is based on `Keep a Changelog <https://keepachangelog.com/en/1.0.0/>`_,
 and this project adheres to `Semantic Versioning <https://semver.org/spec/v2.0.0.html>`_.
 
-[Unreleased]
-============
+[0.2.0] - 2022-02-18
+====================
+This release adds the ability to perform batch additions / editing of entries,
+fixes a couple of bugs, and changes the versioning of the project to use
+single-source versioning. package.bash and setup.py will now determine the
+version of daily from git-describe. Daily can now print its own version via
+the ``--version`` option.
 
 Added
 -----
