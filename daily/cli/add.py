@@ -1,21 +1,59 @@
 import os
 import sys
-import tempfile
-from subprocess import call
 
-from daily.Journal import Journal, entry_filter, get_title_from_date
-from daily.Entry import Entry, entries_to_str, str_to_entries
+from libzet import create_zettel, edit_zettels, load_zettels, load_zettels, move_zettels, save_zettels
+from superdate import parse_date
+
+from daily.load import get_title_from_date, load_entries
+
+
+def _get_filepath(date_, journal, format_):
+    """ What should the path to an entry be?
+
+    Args:
+        date_: Date of entry
+        journal: Directory containing entries.
+        format: file extension of entry
+
+    Returns:
+        Expected filepath.
+    """
+    exp = parse_date(date_).strftime(f'%Y-%m-%d.{format_}')
+    return os.path.sep.join([journal, exp])
+
+
+def _correct_entry(z, args):
+    """ Correct and save an entry.
+
+    Use like z = _correct_entry(z, entry_format)
+
+    Returns:
+        A ref to the corrected entry.
+    """
+    if not 'tags' in z.attrs:
+        z.attrs['tags'] = []
+
+    z.attrs['tags'] = sorted(list(set(z.attrs['tags'])))
+
+
+    # Sync date and filepath
+    z.title = get_title_from_date(z.title)
+
+    exp_path = _get_filepath(z.title, args.journal, args.entry_format)
+    if '_loadpath' not in z.attrs:
+        z.attrs['_loadpath'] = exp_path
+
+    if z.attrs['_loadpath'] != exp_path:
+        z = move_zettels(z, exp_path)[0]
+    else:
+        save_zettels(z, args.entry_format)
+
+    return z
 
 
 def do_add(args):
     """ Add a new entry or update existing entries.
     """
-    journal = Journal()
-
-    if args.entry_format not in ['rst', 'md']:
-        print(f'ERROR: The entry_format setting needs to be either rst or md.')
-        sys.exit(1)
-
     editor = os.environ.get('EDITOR') or os.environ.get('VISUAL')
     if not editor:
         print(
@@ -28,79 +66,30 @@ def do_add(args):
         print('ERROR: {} not a directory.'.format(dir_))
         sys.exit(1)
 
+    # Possibly create and save a new entry for the date.
+    if not any([args.date, args.before, args.after]):
+        args.date = 'today'
+
+    if args.date:
+        new_zet = _get_filepath(args.date, args.journal, args.entry_format)
+        try:
+            z = create_zettel(new_zet, title=args.date, zettel_format=args.entry_format, no_edit=True)
+        except FileExistsError:
+            z = load_zettels(new_zet, args.entry_format)[0]
+
+        _correct_entry(z, args)
+
+    # Load entries
     try:
-        if args.before:
-            args.before = get_title_from_date(args.before)
-        if args.after:
-            args.after = get_title_from_date(args.after)
-        if args.date:
-            args.date = get_title_from_date(args.date)
-
-        if not any([args.date, args.after, args.before]):
-            args.date = get_title_from_date('today')
-
-    except ValueError as ve:
-        print('ERROR: {}'.format(ve))
+        entries = load_entries(args)
+    except ValueError as e:
+        print(f'ERROR: {e}')
         sys.exit(1)
 
-    if args.no_edit:
-        if not args.date:
-            args.date = get_title_from_date('today')
-
-        entry = Entry.createBlankEntry(args.date)
-        if args.entry_format == 'md':
-            print(entry.getMd(force=True))
-        elif args.entry_format == 'rst':
-            print(entry.getRst(force=True))
-
-        sys.exit(0)
-
-    try:
-        journal.load(args.journal, entry_format=args.entry_format)
-    except ValueError as ve:
-        print('ERROR: {}'.format(ve))
-        sys.exit(1)
-
-    old_entries = []
-    if any([args.tags, args.before, args.after, args.tags]):
-        old_entries = journal.getEntries(args)
-    if args.date and not old_entries:
-        old_entries.append(journal[args.date])
-
-    if not old_entries:
+    if not entries:
         print('No matching entries found.')
         sys.exit(1)
 
-    for entry in old_entries:
-        entry.addHeadings(args.headings)
-
-        # Ensures an empty line is printed on the generated RST.
-        # If no notes are entered then the 'notes' heading is deleted anyway.
-        if 'notes' not in entry.headings:
-            entry.headings['notes'] = ''
-
-    # Create tmp file and pre-load it with RST for editing.
-    _, path = tempfile.mkstemp(suffix=f'.{args.entry_format}', dir=args.journal)
-
-    try:
-        text = entries_to_str(old_entries, args.entry_format, args.headings)
-        with open(path, 'w') as f:
-            f.write(text)
-
-        call([editor, path])
-
-        with open(path, 'r') as f:
-            text = f.read().strip()
-
-    finally:
-        os.remove(path)
-
-    try:
-        new_entries = str_to_entries(text, args.entry_format)
-    except ValueError as ve:
-        print('ERROR: A new entry is invalid. {}'.format(ve))
-        sys.exit(1)
-
-    journal.updateEntries(new_entries, old_entries, args.headings)
-
-    journal.write(args.journal, args.entry_format)
+    # Edit and save
+    modified = edit_zettels(entries, args.entry_format, args.headings, f'failed-adds.{args.entry_format}')
+    [_correct_entry(z, args) for z in modified]
