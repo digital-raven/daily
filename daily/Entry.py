@@ -315,8 +315,10 @@ class Entry:
         exp_headings = exp_headings or []
 
         # Update this entry.
+        old_id = self.attrs['id']
         self.title = new_entry.title
-        self.attrs['tags'] = new_entry.attrs['tags']
+        self.attrs = new_entry.attrs.copy()
+        self.attrs['id'] = old_id
 
         if not exp_headings:
             self.headings = new_entry.headings
@@ -358,6 +360,7 @@ class Entry:
             s.append('')
 
         # Append the attributes
+        s.append('')
         s.append('<!--- attributes --->')
         s += ['    ' + x for x in ['---'] + yaml.dump(self.attrs).splitlines()]
         s.append('')
@@ -411,6 +414,7 @@ class Entry:
             s.append('')
 
         # Append the attributes
+        s.append('')
         s.append('.. code-block:: yaml')
         s.append('')
         s += ['    ' + x for x in ['---'] + yaml.dump(self.attrs).splitlines()]
