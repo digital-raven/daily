@@ -41,6 +41,10 @@ def create_parser():
         help='Specify the journal to operate on.')
 
     parser.add_argument(
+        '-f', '--entry-format', choices=['md', 'rst'],
+        help='Text format of the entries.')
+
+    parser.add_argument(
         '--version', nargs=0, help='Print the version of daily and exit.',
         action=print_version())
 
