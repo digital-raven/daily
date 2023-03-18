@@ -90,5 +90,5 @@ def main(args):
         sys.exit(1)
 
     # Edit and save
-    modified = edit_zettels(entries, args.entry_format, args.headings, f'failed-adds.{args.entry_format}')
+    modified = edit_zettels(entries, args.entry_format, args.headings, f'failed-adds.{args.entry_format}', delete=True)
     [_correct_entry(z, args) for z in modified]
