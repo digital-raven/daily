@@ -34,8 +34,8 @@ def main():
     # fill in args with values from config.
     args = add_config_args(args, args.config)
 
-    subcommand = importlib.import_module('daily.cli.{}'.format(args.command))
-    subcommand = getattr(subcommand, 'do_{}'.format(args.command))
+    subcommand = importlib.import_module('daily.cli.{}.main'.format(args.command))
+    subcommand = getattr(subcommand, 'main'.format(args.command))
 
     try:
         subcommand(args)

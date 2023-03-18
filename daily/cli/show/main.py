@@ -5,7 +5,7 @@ from libzet import zettels_to_str
 from daily.load import get_title_from_date, load_entries
 
 
-def do_show(args):
+def main(args):
     if args.entry_format not in ['rst', 'md']:
         print(f'ERROR: The entry_format setting needs to be either rst or md.')
         sys.exit(1)

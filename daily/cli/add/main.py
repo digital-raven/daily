@@ -30,11 +30,10 @@ def _correct_entry(z, args):
     Returns:
         A ref to the corrected entry.
     """
-    if not 'tags' in z.attrs:
+    if 'tags' not in z.attrs:
         z.attrs['tags'] = []
 
     z.attrs['tags'] = sorted(list(set(z.attrs['tags'])))
-
 
     # Sync date and filepath
     z.title = get_title_from_date(z.title)
@@ -51,7 +50,7 @@ def _correct_entry(z, args):
     return z
 
 
-def do_add(args):
+def main(args):
     """ Add a new entry or update existing entries.
     """
     editor = os.environ.get('EDITOR') or os.environ.get('VISUAL')

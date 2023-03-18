@@ -5,6 +5,7 @@ import argparse
 import sys
 
 from daily import __version__
+from daily.cli import build_out_subparsers
 from daily.parsergroups import create_filter_opts
 
 
@@ -54,70 +55,6 @@ def create_parser():
         dest='command',
         description='Each has its own [-h, --help] statement.')
 
-    # add command
-    create_add_subparser(subparsers)
-
-    # refresh command
-    create_refresh_subparser(subparsers)
-
-    # show command
-    create_show_subparser(subparsers)
-
-    # upcoming command
-    create_upcoming_subparser(subparsers)
+    build_out_subparsers(subparsers)
 
     return parser
-
-
-def create_add_subparser(subparsers):
-    sp = subparsers.add_parser(
-        'add', help='Add a new entry or modify an existing one.',
-        parents=[filter_opts])
-
-    sp.add_argument(
-        '--no-edit', action='store_true',
-        help=('Create a new empty entry for the given date. '
-              'Only compatible with -d option.'))
-
-    sp.add_argument(
-        'headings', metavar='HEADING',
-        help='Add (or modify) specific headings for an entry.', nargs='*')
-
-    return sp
-
-
-def create_refresh_subparser(subparsers):
-    sp = subparsers.add_parser(
-        'refresh',
-        help='Refresh a journal to weed out minor errors in bulk.')
-
-    sp.add_argument(
-        'headings', metavar='HEADING', nargs='*',
-        help='Only show entries made under the specified headings.')
-
-    return sp
-
-
-def create_show_subparser(subparsers):
-    sp = subparsers.add_parser(
-        'show',
-        help='Display journal entries.',
-        parents=[filter_opts])
-
-    sp.add_argument(
-        'headings', metavar='HEADING', nargs='*',
-        help='Only show entries made under the specified headings.')
-
-    return sp
-
-
-def create_upcoming_subparser(subparsers):
-    sp = subparsers.add_parser(
-        'upcoming',
-        help='Display upcoming events.',
-        description=(
-            'These are any entries with an "events" heading within the'
-            '(default) range of 2 weeks.'),
-        parents=[filter_opts])
-
-    return sp

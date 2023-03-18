@@ -8,7 +8,7 @@ from libzet import zettels_to_str
 from daily.load import get_title_from_date, load_entries
 
 
-def do_upcoming(args):
+def main(args):
 
     # default date range of +2 weeks
     if not args.before and not args.after:
