@@ -19,7 +19,7 @@ install_requires = []
 if 'DEBBUILD' not in os.environ:
     install_requires = [
         'argcomplete',
-        'libzet>=2',
+        'libzet',
     ]
 
 setup(
@@ -29,8 +29,8 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='',
-    author='Bo Cimino',
-    author_email='ciminobo@protonmail.com',
+    author='OneRedDime',
+    author_email='onereddime@protonmail.com',
     packages=find_packages(exclude=['tests']),
     license='GPLv2',
     python_requires='>=3, <4',
