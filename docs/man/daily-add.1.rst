@@ -59,13 +59,11 @@ the following will be displayed in a text editor in RST or MD format.
 Please note the auto-generated ID for the entry. Each entry will have one. **Do
 not modify this ID**.
 
-Also do not modify the text before the entry's metadata. Daily uses this to know
-where to find it, and it must be at the end.
-
 ::
 
-    2021-07-04, Sun
-    ===============
+    =================
+     2021-07-04, Sun
+    =================
 
 
     .. code-block:: yaml
@@ -116,11 +114,7 @@ command"), it would look like this.
 
         ---
         id: f559323bea5b7acf9f2e9e7ffd4871ff915e0956-2021-7-04_13-44-39-905973
-        tags: workout
-
-Notice that "workout" was automatically added to the entry's tags. Daily will
-automatically add tags for each heading in an entry. The tags are generated
-by downcasing the headings and replacing the spaces with dashes ("-").
+        tags:
 
 If we wanted to just modify the "Workout" heading, we would use the command
 ``daily add -d "July 4th 2021" workout``, and then only the workout heading
@@ -141,7 +135,7 @@ would appear in the user's text editor. Headings are not case-sensitive.
 
         ---
         id: f559323bea5b7acf9f2e9e7ffd4871ff915e0956-2021-7-04_13-44-39-905973
-        tags: workout
+        tags:
 
 It is possible to add other headings manually; simply follow the expected
 formats. Non-existent headings may also be provided to the command, and they
