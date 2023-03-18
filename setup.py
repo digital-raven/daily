@@ -22,11 +22,9 @@ if 'DEBBUILD' not in os.environ:
         'libzet>=2',
     ]
 
-version=sp.check_output(['git','describe','--tags'], text=True).strip()
-
 setup(
     name='daily',
-    version=version,
+    version='1.0.1',
     description='The command-line notebook for daily entries.',
     long_description=long_description,
     long_description_content_type='text/markdown',
