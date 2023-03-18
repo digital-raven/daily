@@ -65,8 +65,8 @@ The journal file is in json format, and follows the structure below.
         ...
     ]
 
-When displayed back, daily will format these entries into RST text. The above
-entry would appear as follows:
+When displayed back, daily will format these entries into RST or markdown text.
+The above entry would appear as follows:
 
 ::
 
@@ -82,26 +82,10 @@ entry would appear as follows:
     tags: work
 
 And the "add" subcommand allows users to modify entries by editing the
-generated RST.
+generated text.
 
 FAQ
 ===
-Why RST?
-~~~~~~~~
-It's my favorite text format and pairs excellently with vim.
-
-Why JSON instead of storing entries in plain RST?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-JSON allows separating out tags and entries, and easier loading into
-memory for searching and sorting. The features of "daily" would not
-be possible if the data were not easy to read from the journal.
-
-Future development?
-~~~~~~~~~~~~~~~~~~~
-If there's interest. I was going to add more features, but I wanted this to
-be a quick project, and it's currently usable for its basic purpose. If someone
-sees promise in this and wants to contribute or make a feature suggestion, feel
-free to open a PR or email me.
 
 How do you say "hello" in Spanish?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

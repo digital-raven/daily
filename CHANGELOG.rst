@@ -6,6 +6,21 @@ All notable changes to daily will be documented in this file.
 The format is based on `Keep a Changelog <https://keepachangelog.com/en/1.0.0/>`_,
 and this project adheres to `Semantic Versioning <https://semver.org/spec/v2.0.0.html>`_.
 
+[0.4.0] - 2022-09-28
+====================
+Added support for markdown. Markdown can be used by setting a line in daily's
+ini file.
+
+Funny enough the journal can switch between markdown and rst if one only uses
+the 2 top-level headings expected for each format in daily. (=== and --- for
+rst, # and ## for markdown). This interchange will obviously fail upon using
+more avanced features of the respective formats.
+
+Added
+-----
+- Support for entries in markdown format.
+- Unit tests. Run with ``python3 -m unittest``
+
 [0.3.1] - 2022-08-28
 ====================
 Small bugfix; locking down version of parsedatetime to 2.5 . There have been
