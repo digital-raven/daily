@@ -46,11 +46,11 @@ And an example in RST.
 Usage with Vimwiki 
 ===================
 Modify daily.ini (installed in ``~/.config/daily`` after a first run) to change
-the journal's directory to your vimwiki diary, and set the format to "md".
+the journal's directory to your vimwiki diary, and be sure the format is "md".
 
 Also install the ``generate-vimwiki-diary-template`` file to your ~/.vim/bin
 directory. This will make it so vim auto-generates daily's entry text for new
-markdown files in the vimwiki diary directory.
+markdown files in the vimwiki diary directory. This must be done manually.
 
 Usage
 =====
@@ -92,25 +92,20 @@ feature additions, and patch number for bugfixes or optimizations.
 
 Building and installation
 =========================
-Install the pybuild deb in ``utils/`` before attempting to package this program
-for debian. pybuild versions > 5.0 will not work, so an older version has been
-archived in this repo.
-
-Use the ``package.bash`` script to create packages. It can package the software
-as a python wheel, deb, rpm, or simply a gz archive with the respective
-commands.
+Clone this repo, checkout a release tag, and run these commands.
 
 ::
 
-    ./package.bash python
-    ./package.bash deb
-    ./package.bash rpm
-    ./package.bash gz
-
-    # Clean the directory.
+    ./package.bash python3
+    pip3 install --user .
     ./package.bash clean
 
-Alternatively just clone this repo use pip to install to a virtual environment.
+The ``package.bash`` script can also package the software as a python wheel or
+a gz archive with the respective commands.
+
+The man pages will be installed at ``$HOME/.local/usr/share/man``
+and the bash completion script will be installed at
+``$HOME/.local/etc/bash_completion.d/daily_completion.sh``. Update your bashrc.
 
 Testing and developer usage
 ===========================

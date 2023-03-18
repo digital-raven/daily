@@ -73,6 +73,14 @@ generated text.
 FAQ
 ===
 
+Manpages and auto-complete?
+---------------------------
+If daily was pip installed with the --user flag, then the man pages will be
+installed at ``$HOME/.local/usr/share/man`` and the bash completion script
+will be installed at ``$HOME/.local/etc/bash_completion.d/daily_completion.sh``.
+Update your bashrc to source the completion script and update your ``MANPATH``
+environment variable.
+
 How do you say "hello" in Spanish?
 ----------------------------------
 "Donde hello".
