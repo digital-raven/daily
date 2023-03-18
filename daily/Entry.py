@@ -4,6 +4,10 @@ import re
 from datetime import datetime
 
 
+rst_sep = '.. end-entry'
+md_sep = '<!--- end-entry --->'
+
+
 # Find heading points.
 def _is_rst_heading(s):
     s = s.strip()
@@ -16,26 +20,6 @@ def _is_md_heading(s):
     return s.startswith('# ') or s.startswith('## ')
 
 
-def _get_headings_and_text(rst):
-    """ Separate out top-level headings and text.
-    """
-    headings = []
-    text = []
-
-    split = re.split('=+\n', rst)
-    split = [s.splitlines() for s in split]
-
-    headings.append(split[0][0])
-
-    for body in split[1:-1]:
-        text.append('\n'.join(body[:-1]))
-        headings.append(body[-1])
-
-    text.append('\n'.join(split[-1]))
-
-    return headings, text
-
-
 def get_entries_from_md(md):
     """ Parse many entries out of markdown text.
     """
@@ -44,8 +28,7 @@ def get_entries_from_md(md):
         return []
 
     # Markdown entries are terminated by a line containing only this string.
-    end_str = '<!--- Break --->'
-    texts = md.split(end_str)
+    texts = md.split(md_sep)
     if not texts[-1]:
         texts.pop()
 
@@ -58,14 +41,17 @@ def get_entries_from_md(md):
 
 
 def get_entries_from_rst(rst):
-    if not rst.strip():
+    rst = rst.strip()
+    if not rst:
         return []
 
-    entries = []
-    titles, contents = _get_headings_and_text(rst)
+    texts = rst.split(rst_sep)
+    if not texts[-1]:
+        texts.pop()
 
-    for t, c in zip(titles, contents):
-        entries.append(Entry.createFromRst('\n'.join([t, '===', c])))
+    entries = []
+    for t in texts:
+        entries.append(Entry.createFromRst(t))
 
     return entries
 
@@ -106,11 +92,10 @@ def entries_to_str(entries, entry_format, headings=None):
     text = ''
     if entry_format == 'rst':
         text = [x.getRst(headings) for x in entries]
-        text = '\n\n\n'.join(sorted([x for x in text if x]))
+        text = f'\n{rst_sep}\n\n\n'.join(sorted([x for x in text if x]))
     elif entry_format == 'md':
-        end_str = '<!--- Break --->'
         text = [x.getMd(headings) for x in entries]
-        text = f'{end_str}\n\n\n'.join(sorted([x for x in text if x]))
+        text = f'\n{md_sep}\n\n\n'.join(sorted([x for x in text if x]))
 
     return text
 
