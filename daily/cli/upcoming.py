@@ -7,6 +7,7 @@ tag "events".
 
 from daily.cli.show import do_show
 from daily.Journal import get_title_from_date, Journal
+from daily.Entry import str_to_entries
 
 
 def do_upcoming(args):
@@ -41,11 +42,5 @@ def do_upcoming(args):
         print('ERROR: Journal "{}" contains invalid JSON. {}'.format(args.journal, e))
         sys.exit(1)
 
-    entries = []
-    if args.entry_format == 'rst':
-        entries = [x.getRst(['events']) for x in journal]
-    elif args.entry_format == 'md':
-        entries = [x.getMd(['events']) for x in journal]
-
-    entries = sorted([x.getRst(['events']) for x in journal])
-    print('\n'.join([x for x in entries if x]))
+    entries = journal.getEntries(args)
+    print(entries_to_str(entries, args.entry_format, headings=['events']))

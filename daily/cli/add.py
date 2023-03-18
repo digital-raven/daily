@@ -4,7 +4,7 @@ import tempfile
 from subprocess import call
 
 from daily.Journal import Journal, entry_filter, get_title_from_date
-from daily.Entry import Entry, get_entries_from_md, get_entries_from_rst
+from daily.Entry import Entry, entries_to_str, str_to_entries
 
 
 def do_add(args):
@@ -63,7 +63,7 @@ def do_add(args):
 
     old_entries = []
     if any([args.tags, args.before, args.after, args.tags]):
-        old_entries = [x for x in journal if entry_filter(x, args)]
+        old_entries = journal.getEntries(args)
     if args.date and not old_entries:
         old_entries.append(journal[args.date])
 
@@ -83,12 +83,7 @@ def do_add(args):
     _, path = tempfile.mkstemp(suffix=f'.{args.entry_format}')
 
     try:
-        text = ''
-        if args.entry_format == 'rst':
-            text = '\n\n\n'.join(sorted([x.getRst(args.headings) for x in old_entries]))
-        elif args.entry_format == 'md':
-            text = '\n\n\n'.join(sorted([x.getMd(args.headings) for x in old_entries]))
-
+        text = entries_to_str(old_entries, args.entry_format)
         with open(path, 'w') as f:
             f.write(text)
 
@@ -101,10 +96,7 @@ def do_add(args):
         os.remove(path)
 
     try:
-        if args.entry_format == 'rst':
-            new_entries = get_entries_from_rst(text)
-        elif args.entry_format == 'md':
-            new_entries = get_entries_from_md(text)
+        new_entries = str_to_entries(text, args.entry_format)
     except ValueError as ve:
         print('ERROR: A new entry is invalid. {}'.format(ve))
         sys.exit(1)

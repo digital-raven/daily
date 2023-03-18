@@ -11,4 +11,3 @@ multiline
 
 id: today-id
 tags: birthday
-<!--- End Daily Entry --->
