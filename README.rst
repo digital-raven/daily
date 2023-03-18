@@ -87,8 +87,7 @@ markdown files in the vimwiki diary directory. This must be done manually.
 Maintenance and versioning
 ==========================
 Update the CHANGELOG when cutting a new release, then update the version
-in setup.py. Then commit and tag it named after the release. Then
+in setup.py. Then commit and tag it named after the release. Then...
 
-- ``make`` the man pages.
-- ``python3 -m build`` to build the release.
-- ``twine upload -r pypi dist/*`` to upload it to PyPi.
+- Run ``make`` to build the package.
+- ``make release`` to upload to PyPi.
