@@ -83,7 +83,7 @@ def do_add(args):
     _, path = tempfile.mkstemp(suffix=f'.{args.entry_format}', dir=args.journal)
 
     try:
-        text = entries_to_str(old_entries, args.entry_format)
+        text = entries_to_str(old_entries, args.entry_format, args.headings)
         with open(path, 'w') as f:
             f.write(text)
 
