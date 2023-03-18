@@ -26,7 +26,7 @@ setup(
     version='2.0.1',
     description='Command-line notebook for daily entries.',
     long_description=long_description,
-    long_description_content_type='text/markdown',
+    long_description_content_type='text/x-rst',
     url='https://github.com/digital-raven/daily',
     author='Raven',
     author_email='raven@rubicon.aleeas.com',
