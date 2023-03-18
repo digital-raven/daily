@@ -46,4 +46,4 @@ def do_show(args):
     elif args.entry_format == 'md':
         entries = sorted([x.getMd(args.headings) for x in journal if entry_filter(x, args)])
 
-    print('\n'.join([x for x in entries if x]))
+    print('\n\n\n'.join([x for x in entries if x]))
