@@ -85,9 +85,9 @@ def do_add(args):
     try:
         text = ''
         if args.entry_format == 'rst':
-            text = '\n'.join([x.getRst(args.headings) for x in old_entries])
+            text = '\n\n\n'.join(sorted([x.getRst(args.headings) for x in old_entries]))
         elif args.entry_format == 'md':
-            text = '\n'.join([x.getMd(args.headings) for x in old_entries])
+            text = '\n\n\n'.join(sorted([x.getMd(args.headings) for x in old_entries]))
 
         with open(path, 'w') as f:
             f.write(text)

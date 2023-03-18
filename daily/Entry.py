@@ -363,10 +363,6 @@ class Entry:
         s.append('tags: ' + ' '.join(self.tags))
         s.append('<!--- End Daily Entry --->')
 
-        # Will become trailing newline
-        s.append('')
-        s.append('')
-
         if display or force:
             return '\n'.join(s)
         else:
