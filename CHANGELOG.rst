@@ -13,10 +13,13 @@ Added
 -----
 - Batch editing of entries.
 - Filter options to the "add" subcommand.
-- Entries now display with an ID. This ID may not be searched on This ID may not be searched on
+- Entries now display with an ID. This ID may not be searched on.
 
 Fixed
 -----
+- `daily show` not processing the `-d, --date` option.
+- Bug in Journal.entry_filter function where providing only args.date
+  would return all entries.
 - Improper handling of `-d, --date` options in parsergroups.
 - Package description in DEBIAN/control.
 
