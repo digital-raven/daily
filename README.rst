@@ -7,13 +7,13 @@ in either MD or RST format.
 
 Building and installation
 =========================
-Available via PyPi; just ``pip3 install daily --user``
+Available via PyPi. ``pip3 install daily-cli --user``
 
 Alternatively, clone this repo and run these commands.
 
 ::
 
-    cd docs/man && make && cd -
+    make
     pip3 install --user .
 
 The man pages will be installed at ``$HOME/.local/usr/share/man``
