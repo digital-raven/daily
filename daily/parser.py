@@ -28,7 +28,7 @@ def create_parser():
     parser = argparse.ArgumentParser(
         prog='daily',
         description=(
-            'The ultimate command-line journal. Run "daily" with no '
+            'The command-line journal for daily entries. Run "daily" with no '
             'arguments to perform first-time setup.'))
 
     parser.add_argument(
