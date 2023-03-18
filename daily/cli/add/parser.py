@@ -6,7 +6,7 @@ filter_opts = create_filter_opts()
 
 def add_subparser(subparsers):
     sp = subparsers.add_parser(
-        'add', help='Add a new entry or modify an existing one.',
+        'add', help='Add a new entry or modify existing ones.',
         parents=[filter_opts])
 
     sp.add_argument(
