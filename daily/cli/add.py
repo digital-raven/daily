@@ -25,15 +25,8 @@ def do_add(args):
 
     dir_ = os.path.dirname(args.journal)
     if os.path.isfile(dir_):
-        print('ERROR: {} is an existing file.'.format(dir_))
+        print('ERROR: {} not a directory.'.format(dir_))
         sys.exit(1)
-
-    if os.path.isfile(args.journal):
-        try:
-            journal.load(args.journal)
-        except ValueError as ve:
-            print('ERROR: {}'.format(ve))
-            sys.exit(1)
 
     try:
         if args.before:
@@ -45,6 +38,25 @@ def do_add(args):
 
         if not any([args.date, args.after, args.before]):
             args.date = get_title_from_date('today')
+
+    except ValueError as ve:
+        print('ERROR: {}'.format(ve))
+        sys.exit(1)
+
+    if args.no_edit:
+        if not args.date:
+            args.date = get_title_from_date('today')
+
+        entry = Entry.createBlankEntry(args.date)
+        if args.entry_format == 'md':
+            print(entry.getMd(force=True))
+        elif args.entry_format == 'rst':
+            print(entry.getRst(force=True))
+
+        sys.exit(0)
+
+    try:
+        journal.load(args.journal, entry_format=args.entry_format)
     except ValueError as ve:
         print('ERROR: {}'.format(ve))
         sys.exit(1)
@@ -99,4 +111,4 @@ def do_add(args):
 
     journal.updateEntries(new_entries, old_entries, args.headings)
 
-    journal.write(args.journal)
+    journal.write(args.journal, args.entry_format)

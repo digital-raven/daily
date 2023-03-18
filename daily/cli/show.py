@@ -29,7 +29,7 @@ def do_show(args):
         sys.exit(1)
 
     try:
-        journal.load(args.journal)
+        journal.load(args.journal, entry_format=args.entry_format)
     except FileNotFoundError as e:
         print('ERROR: Journal file "{}" does not exist.'.format(args.journal))
         sys.exit(1)
@@ -42,8 +42,8 @@ def do_show(args):
 
     entries = []
     if args.entry_format == 'rst':
-        entries = [x.getRst(args.headings) for x in journal if entry_filter(x, args)]
+        entries = sorted([x.getRst(args.headings) for x in journal if entry_filter(x, args)])
     elif args.entry_format == 'md':
-        entries = [x.getMd(args.headings) for x in journal if entry_filter(x, args)]
+        entries = sorted([x.getMd(args.headings) for x in journal if entry_filter(x, args)])
 
     print('\n'.join([x for x in entries if x]))

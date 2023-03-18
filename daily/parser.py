@@ -71,6 +71,11 @@ def create_add_subparser(subparsers):
         parents=[filter_opts])
 
     sp.add_argument(
+        '--no-edit', action='store_true',
+        help=('Create a new empty entry for the given date. '
+              'Only compatible with -d option.'))
+
+    sp.add_argument(
         'headings', metavar='HEADING',
         help='Add (or modify) specific headings for an entry.', nargs='*')
 
