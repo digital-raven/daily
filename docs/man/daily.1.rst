@@ -20,7 +20,7 @@ criterion.
 
 Use the ``daily add`` command to add new entries or modify existing entries,
 and the ``daily show`` command to go back to view those entries. Daily can also
-be used to show upcoming events with the ``dailiy upcoming`` command. This
+be used to show upcoming events with the ``dailiy todo`` command. This
 command will show entries in the near future if an entry has content added under
 an "todo" heading. Each subcommand has its own manual page with more detail.
 
@@ -88,6 +88,5 @@ How do you say "hello" in Spanish?
 SEE ALSO
 ========
 daily-add(1)
-daily-refresh(1)
 daily-show(1)
-daily-upcoming(1)
+daily-todo(1)

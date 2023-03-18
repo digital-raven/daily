@@ -2,7 +2,7 @@
  daily
 =======
 Hello and welcome to daily, a program for command-line journaling. Each
-journal entry is stored in a file named after the date in YYY-mm-dd format
+journal entry is stored in a file named after the date in YYYY-mm-dd format
 in either MD or RST format.
 
 Entries have a title named after the date, a desription, headings, and
@@ -67,7 +67,7 @@ but a general quick start cookbook...
     daily show workout todo  # Show only specific headings for entries
     daily add workout  # Edit specific headings for an entry.
 
-    daily upcoming  # Print next 2 weeks of todos
+    daily todo  # Print next 2 weeks of todos
 
 Required packages for a developer
 =================================
