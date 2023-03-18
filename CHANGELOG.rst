@@ -6,6 +6,16 @@ All notable changes to daily will be documented in this file.
 The format is based on `Keep a Changelog <https://keepachangelog.com/en/1.0.0/>`_,
 and this project adheres to `Semantic Versioning <https://semver.org/spec/v2.0.0.html>`_.
 
+[0.3.1] - 2022-08-28
+====================
+Small bugfix; locking down version of parsedatetime to 2.5 . There have been
+a couple of interface changes with the Calendar.parse method and this version
+works so we're keeping it.
+
+Fixed
+-----
+- parsedatetime locked to version 2.5
+
 [0.3.0] - 2022-08-25
 ====================
 Nothing major happend in this release, but I did modify an existing feature
