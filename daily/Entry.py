@@ -200,7 +200,7 @@ class Entry:
 
         heading_pts.append(len(md))
 
-        title = ''.join(md[heading_pts[0]].split()[1:])
+        title = ' '.join(md[heading_pts[0]].split()[1:])
 
         # Gather notes
         headings['notes'] = '\n'.join(md[1:heading_pts[1]])
@@ -331,7 +331,7 @@ class Entry:
 
         self.refresh()
 
-    def getMd(self, headings=None):
+    def getMd(self, headings=None, force=False):
         display = False
 
         headings = headings or []
@@ -355,24 +355,30 @@ class Entry:
             s.append('## ' + lookup_headings[heading])
             s.append(self.headings[lookup_headings[heading]])
 
+        # No content, but add an empty line for good-looks
+        if not display and force:
+            s.append('')
+
         s.append('id: ' + self.id)
         s.append('tags: ' + ' '.join(self.tags))
         s.append('<!--- End Daily Entry --->')
 
         # Will become trailing newline
         s.append('')
+        s.append('')
 
-        if display:
+        if display or force:
             return '\n'.join(s)
         else:
             return ''
 
-    def getRst(self, headings=None):
+    def getRst(self, headings=None, force=False):
         """ Display this entry in RST format.
 
         Args:
             headings: Only show the listed headings. Will show all
                 headings if this value is None.
+            force: Force the display even if there is no content.
 
         Returns:
             An RST string representing the content of this entry.
@@ -405,13 +411,17 @@ class Entry:
             s.append('-' * len(lookup_headings[heading]))
             s.append(self.headings[lookup_headings[heading]])
 
+        # No content, but add an empty line for good-looks
+        if not display and force:
+            s.append('')
+
         s.append('id: ' + self.id)
         s.append('tags: ' + ' '.join(self.tags))
 
         # Will become trailing newline
         s.append('')
 
-        if display:
+        if display or force:
             return '\n'.join(s)
         else:
             return ''

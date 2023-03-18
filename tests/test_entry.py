@@ -1,8 +1,5 @@
-import unittest
-
 import os
 import unittest
-from datetime import datetime
 
 from daily.Entry import Entry, get_entries_from_md, get_entries_from_rst
 
