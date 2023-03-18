@@ -11,7 +11,7 @@ multiline
 
 id: today-id
 tags: birthday
-<!--- Break --->
+<!--- end-entry --->
 
 # tomorrow
 Tomorrow is tomorrow
