@@ -6,6 +6,27 @@ All notable changes to daily will be documented in this file.
 The format is based on `Keep a Changelog <https://keepachangelog.com/en/1.0.0/>`_,
 and this project adheres to `Semantic Versioning <https://semver.org/spec/v2.0.0.html>`_.
 
+[2.0.0] - 2023-01-19
+====================
+Technically a breaking change with renaming the ``upcoming`` subcommand
+to ``todo`` but I'll give it a scream test. Whose gonna scream?
+
+Also now installed as ``daily-cli`` because ``daily`` was taken on PyPi.
+
+Changed
+-------
+- Entries will be deleted if their whole text is removed during editing.
+- ``upcoming`` is now ``todo``.
+- Build procedure is different now.
+
+Removed
+-------
+- ``refresh`` subcommand is now removed.
+
+Refactor
+--------
+- Underlying entries now stored using libzet zettels.
+
 [1.0.1] - 2023-01-19
 ====================
 Some minor bugfixes and removal of debian packaging support. Pip should

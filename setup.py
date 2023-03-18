@@ -1,5 +1,4 @@
 import os
-import subprocess as sp
 from setuptools import setup, find_packages
 from os import path
 
@@ -23,12 +22,12 @@ if 'DEBBUILD' not in os.environ:
     ]
 
 setup(
-    name='daily',
-    version='1.0.1',
-    description='The command-line notebook for daily entries.',
+    name='daily-cli',
+    version='2.0.0',
+    description='Command-line notebook for daily entries.',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    url='',
+    url='https://github.com/OneRedDime/daily',
     author='OneRedDime',
     author_email='onereddime@protonmail.com',
     packages=find_packages(exclude=['tests']),
