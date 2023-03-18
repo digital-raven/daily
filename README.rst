@@ -74,6 +74,10 @@ automatically determine the version based on git-describe.
 
 Building and installation
 =========================
+Install the pybuild deb in ``utils/`` before attempting to package this program
+for debian. pybuild versions > 5.0 will not work, so an older version has been
+archived in this repo.
+
 Use the ``package.bash`` script to create packages. It can package the software
 as a python wheel, deb, rpm, or simply a gz archive with the respective
 commands.

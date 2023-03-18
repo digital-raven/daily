@@ -1,0 +1,15 @@
+Source: daily
+Section: base
+Priority: optional
+Maintainer: Bo Cimino <ciminobo@protonmail.com>
+Changed-By: Bo Cimino <ciminobo@protonmail.com>
+Build-Depends: debhelper (>= 11~), dh-python, python3-all, python3-setuptools, python3-all, python3-sphinx
+
+Package: daily
+Version: REPLACE_VERSION
+Architecture: all
+Depends: python3, python3-argcomplete, python3-parsedatetime, python3-yaml
+Description: Python3 Daily
+ The command-line notebook for daily entries.
+ .
+ This package installs daily for python3
