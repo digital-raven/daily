@@ -4,13 +4,17 @@ import tempfile
 from subprocess import call
 
 from daily.Journal import Journal, entry_filter, get_title_from_date
-from daily.Entry import Entry, get_entries_from_rst
+from daily.Entry import Entry, get_entries_from_md, get_entries_from_rst
 
 
 def do_add(args):
     """ Add a new entry or update existing entries.
     """
     journal = Journal()
+
+    if args.entry_format not in ['rst', 'md']:
+        print(f'ERROR: The entry_format setting needs to be either rst or md.')
+        sys.exit(1)
 
     editor = os.environ.get('EDITOR') or os.environ.get('VISUAL')
     if not editor:
@@ -64,12 +68,17 @@ def do_add(args):
             entry.headings['notes'] = ''
 
     # Create tmp file and pre-load it with RST for editing.
-    _, path = tempfile.mkstemp(suffix='.rst')
+    _, path = tempfile.mkstemp(suffix=f'.{args.entry_format}')
 
     try:
-        rst = '\n'.join([x.getRst(args.headings) for x in old_entries])
+        text = ''
+        if args.entry_format == 'rst':
+            text = '\n'.join([x.getRst(args.headings) for x in old_entries])
+        elif args.entry_format == 'md':
+            text = '\n'.join([x.getMd(args.headings) for x in old_entries])
+
         with open(path, 'w') as f:
-            f.write(rst)
+            f.write(text)
 
         call([editor, path])
 
@@ -80,7 +89,10 @@ def do_add(args):
         os.remove(path)
 
     try:
-        new_entries = get_entries_from_rst(text)
+        if args.entry_format == 'rst':
+            new_entries = get_entries_from_rst(text)
+        elif args.entry_format == 'md':
+            new_entries = get_entries_from_md(text)
     except ValueError as ve:
         print('ERROR: A new entry is invalid. {}'.format(ve))
         sys.exit(1)

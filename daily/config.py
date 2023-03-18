@@ -6,9 +6,21 @@ import os
 from pathlib import Path
 
 
+home = Path.home()
+
 default_conf = '/etc/daily/default.ini'
-user_confdir = '{}/.config/daily'.format(Path.home())
-user_conf = '{}/daily.ini'.format(user_confdir)
+user_confdir = f'{home}/.config/daily'
+user_conf = f'{user_confdir}/daily.ini'
+
+
+default = f"""\
+[default]
+# Path to journal
+journal = {home}/.local/share/daily/journal.json
+
+# Store entries as md or rst
+entry_format = rst
+"""
 
 
 def get_defaults():
@@ -23,43 +35,22 @@ def get_defaults():
     """
     return {
         'journal': './journal.json',
+        'entry_format': 'rst',
     }
 
 
 def do_first_time_setup():
     """ Copy default.ini to user conf path.
     """
-
-    # use these vals to create user config if not present in system defaults.
-    default_vals = get_defaults()
-    default_vals['journal'] = '{}/.local/share/daily/journal.json'.format(Path.home())
-
-    cp = configparser.ConfigParser()
-
-    # create empty string as conf if system default does not exist.
-    if os.path.exists(default_conf):
-        cp.read(default_conf)
-    else:
-        cp.read_string('[default]')
-
-    # substitute hardcoded defaults for any absent values.
-    for key in default_vals:
-        if key not in cp['default'] or not cp['default'][key]:
-            cp['default'][key] = str(default_vals[key])
-
     try:
         os.makedirs(user_confdir)
     except FileExistsError:
         pass
 
     with open(user_conf, 'w') as f:
-        cp.write(f)
+        f.write(default)
 
-    try:
-        dir_ = os.path.dirname(cp['default']['journal'])
-        os.makedirs(dir_)
-    except FileExistsError:
-        pass
+    os.makedirs(f'{home}/.local/share/daily', exist_ok=True)
 
 
 def add_config_args(args, config=None):
