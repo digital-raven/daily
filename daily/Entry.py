@@ -69,7 +69,7 @@ class Entry:
                 If this is provided, ensure it is unique.
         """
         self.title = title
-        self.headings = {k.lower(): v for k, v in headings.items()}
+        self.headings = {k: v for k, v in headings.items()}
         self.tags = tags
         self.id = id_
         if not self.id:
@@ -83,7 +83,7 @@ class Entry:
         Args:
             headings: List of headings to add. No content will be added.
         """
-        headings = [x.lower() for x in headings]
+        headings = [x for x in headings]
         for heading in headings:
             if heading not in self.headings:
                 self.headings[heading] = ''
@@ -195,15 +195,9 @@ class Entry:
     def refresh(self):
         """ Refresh tags and headings.
 
-        Tags should be sorted, lower-case, and contain the headings.
-        Headings should be sorted and lower-case
+        Tags should be sorted.
         """
-        tmp = [y.replace(',', ' ').replace(':', ' ').split() for y in self.headings.keys()]
-        self.tags.extend(['-'.join(x) for x in tmp])
-        self.tags = sorted(list(set([x.lower() for x in self.tags])))
-        self.tags = [x for x in self.tags if not x == 'notes']
-
-        self.headings = {k.lower(): self.headings[k] for k in sorted(self.headings)}
+        self.tags = sorted(list(set([x for x in self.tags])))
 
     def update(self, new_entry, exp_headings=None):
         """ Update an entry.
@@ -254,7 +248,8 @@ class Entry:
         display = False
 
         headings = headings or []
-        headings = [x.lower() for x in sorted(headings)] or self.headings
+        headings = headings or self.headings
+        headings = [x.lower() for x in headings]
 
         s = []
         s.append(self.title)
@@ -264,14 +259,16 @@ class Entry:
             display = True
             s.append(self.headings['notes'])
 
+        # case-insensitive search
+        lookup_headings = {k.lower(): k for k in self.headings}
         for heading in headings:
-            if heading == 'notes' or heading not in self.headings:
+            if heading == 'notes' or heading not in lookup_headings:
                 continue
 
             display = True
-            s.append(heading.title())
-            s.append('-' * len(heading))
-            s.append(self.headings[heading])
+            s.append(lookup_headings[heading])
+            s.append('-' * len(lookup_headings[heading]))
+            s.append(self.headings[lookup_headings[heading]])
 
         s.append('id: ' + self.id)
         s.append('tags: ' + ' '.join(self.tags))
