@@ -99,6 +99,14 @@ class Journal:
 
         self.modified = set()
 
+    def getEntries(self, args):
+        """ Get entries based on a filter.
+
+        Args:
+            args: Args to entry_filter
+        """
+        return [x for x in self if entry_filter(x, args)]
+
     def updateEntries(self, new_entries, exp_entries=None, exp_headings=None):
         """ Update or add a bunch of entries at once.
 
