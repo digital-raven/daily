@@ -1,8 +1,56 @@
 =======
  daily
 =======
+Hello and welcome to daily, a program for command-line journaling. Each
+journal entry is stored in a file named after the date in YYY-mm-dd format
+in either MD or RST format.
 
-Hello and welcome to daily, a program for command-line journaling.
+Entries have a title named after the date, a desription, headings, and
+metadata all built in to the text. Here is a simple example in markdown.
+
+::
+
+    # 2022-10-10, Mon
+    I went to my daughter's play.
+
+    ## Workout
+    And did like a gazillion pushups.
+
+
+    <!--- attributes --->
+        ---
+        id: some-internal-id
+        tags: []
+
+And an example in RST.
+
+::
+
+    =================
+     2022-10-10, Mon
+    =================
+    This semester in college is really starting to grind.
+
+    Todo
+    ====
+    - 8am Calculus class.
+    - 9am Workout
+
+    
+    .. code-block:: yaml
+    
+        ---
+        id: some-internal-id
+        tags: []
+
+Usage with Vimwiki 
+===================
+Modify daily.ini (installed in ``~/.config/daily`` after a first run) to change
+the journal's directory to your vimwiki diary, and set the format to "md".
+
+Also install the ``generate-vimwiki-diary-template`` file to your ~/.vim/bin
+directory. This will make it so vim auto-generates daily's entry text for new
+markdown files in the vimwiki diary directory.
 
 Usage
 =====
@@ -57,3 +105,11 @@ Use the following command to run unit tests.
 ::
 
     python3 -m unittest
+
+Known issues
+------------
+Daily generally works as expected. That said, there are a few bugs. These
+shouldn't be a problem unless the user intentionally feeds bad input, but
+nonetheless...
+
+- General robustness with bad input and better error messages.
