@@ -19,7 +19,7 @@ install_requires = []
 if 'DEBBUILD' not in os.environ:
     install_requires = [
         'argcomplete',
-        'libzet>=2',
+        'libzet',
     ]
 
 setup(
