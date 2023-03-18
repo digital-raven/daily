@@ -43,4 +43,4 @@ def do_upcoming(args):
         sys.exit(1)
 
     entries = journal.getEntries(args)
-    print(entries_to_str(entries, args.entry_format, headings=['events']))
+    print(entries_to_str(entries, args.entry_format, headings=['todo']))
