@@ -8,12 +8,15 @@ def do_show(args):
 
     args.tags = [x for x in args.tags.split(',') if x]
 
+    if args.date:
+        args.date = get_title_from_date(args.date)
+
     if args.after:
         args.after = get_title_from_date(args.after)
     if args.before:
         args.before = get_title_from_date(args.before)
 
-    if not args.tags and not args.before and not args.after:
+    if not any([args.after, args.before, args.date, args.tags]):
         args.after = get_title_from_date('2 weeks ago')
         args.before = get_title_from_date('today')
 
