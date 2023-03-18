@@ -13,8 +13,7 @@ md_sep = '<!--- end-entry --->'
 # Find heading points.
 def _is_rst_heading(s):
     s = s.strip()
-    return (s.startswith('=') and s.endswith('=')
-            or s.startswith('-') and s.endswith('-'))
+    return s.startswith('=') and s.endswith('=')
 
 
 def _is_md_heading(s):
@@ -254,6 +253,7 @@ class Entry:
         title = ''
         headings = {}
 
+        # Split out the attrs and content.
         attr_header = '.. code-block:: yaml'
         rst = rst.split(attr_header)
         if len(rst) == 1:
@@ -262,16 +262,20 @@ class Entry:
         attrs = yaml.safe_load(rst[-1].strip())
         rst = attr_header.join(rst[:-1]).splitlines()
 
-        # Find the headings and content.
+        # Strip the first line of === if it exists.
+        if _is_rst_heading(rst[0]):
+            rst = rst[1:]
+
+        # Find the lines in the text that are heading markers.
         heading_pts = [x - 1 for x, y in enumerate(rst) if _is_rst_heading(y)]
 
-        # Find the title.
+        # First heading marker is the title.
         if not heading_pts or heading_pts[0] == -1:
             raise ValueError('No title in entry.')
 
         heading_pts.append(len(rst))
 
-        title = rst[heading_pts[0]]
+        title = rst[heading_pts[0]].strip()
 
         # Gather notes
         headings['notes'] = '\n'.join(rst[heading_pts[0] + 2:heading_pts[1]])
@@ -343,7 +347,8 @@ class Entry:
 
         if 'notes' in headings:
             display = True
-            s.append(self.headings['notes'])
+            s.append(self.headings['notes'].rstrip())
+            s.append('')
 
         # case-insensitive search
         lookup_headings = {k.lower(): k for k in self.headings}
@@ -353,7 +358,8 @@ class Entry:
 
             display = True
             s.append('## ' + lookup_headings[heading])
-            s.append(self.headings[lookup_headings[heading]])
+            s.append(self.headings[lookup_headings[heading]].rstrip())
+            s.append('')
 
         # No content, but add an empty line for good-looks
         if not display and force:
@@ -391,12 +397,14 @@ class Entry:
         headings = [x.lower() for x in headings]
 
         s = []
-        s.append(self.title)
-        s.append('=' * len(self.title))
+        s.append('=' * (len(self.title) + 2))
+        s.append(' ' + self.title)
+        s.append('=' * (len(self.title) + 2))
 
         if 'notes' in headings:
             display = True
-            s.append(self.headings['notes'])
+            s.append(self.headings['notes'].rstrip())
+            s.append('')
 
         # case-insensitive search
         lookup_headings = {k.lower(): k for k in self.headings}
@@ -406,8 +414,9 @@ class Entry:
 
             display = True
             s.append(lookup_headings[heading])
-            s.append('-' * len(lookup_headings[heading]))
-            s.append(self.headings[lookup_headings[heading]])
+            s.append('=' * len(lookup_headings[heading]))
+            s.append(self.headings[lookup_headings[heading]].rstrip())
+            s.append('')
 
         # No content, but add an empty line for good-looks
         if not display and force:
