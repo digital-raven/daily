@@ -35,7 +35,7 @@ setup(
     author_email='ciminobo@protonmail.com',
     packages=find_packages(exclude=['tests']),
     license='GPLv2',
-    python_requires='>3, <4',
+    python_requires='>=3.10, <4',
     install_requires=install_requires,
     data_files=[
         ('/etc/daily', ['etc/default.ini']),
