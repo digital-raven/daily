@@ -20,12 +20,13 @@ this operating system.
 
 Maintenance
 ===========
-When releasing, update the version in DEBIAN/control and setup.py, and update
-the CHANGELOG.
+Update the CHANGELOG when cutting a new release, then create and push a git tag
+named after the new version. This project's packaging script and setup.py will
+automatically determine the version based on git-describe.
 
 Building and installation
 =========================
-Use the ``package.bash`` script to create releases. It can release the software
+Use the ``package.bash`` script to create packages. It can package the software
 as a python wheel, deb, rpm, or simply a gz archive with the respective
 commands.
 

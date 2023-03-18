@@ -12,8 +12,14 @@ and this project adheres to `Semantic Versioning <https://semver.org/spec/v2.0.0
 Added
 -----
 - Batch editing of entries.
+- ``--version`` option to print the version of daily.
 - Filter options to the "add" subcommand.
 - Entries now display with an ID. This ID may not be searched on.
+
+Changed
+-------
+- Version update methodology. Simply update the CHANGELOG with the new version
+  when cutting a new release and then push a git tag named after that version.
 
 Fixed
 -----
