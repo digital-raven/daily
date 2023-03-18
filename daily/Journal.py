@@ -37,8 +37,7 @@ class Journal:
 
         Args:
             journal: Path to the journal.
-            entries: Optional; List of dates to load. Entry names will
-                be written to disk as %Y-%m-%d.{jntry_format}
+            entries: Optional; Specific entry files to load.
             entry_format: rst or md
 
         Raises:
@@ -53,10 +52,14 @@ class Journal:
 
         match_ = f'[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9].{entry_format}'
 
-        entries = entries or glob(match_, root_dir=journal)
+        paths = []
+        if entries:
+            paths = [f'{journal}/{x}' for x in entries]
+        else:
+            paths = glob(f'{journal}/{match_}')
 
-        for entry in entries:
-            path = f'{journal}/{entry}'
+        for path in paths:
+            path = f'{path}'
             with open(path) as f:
                 text = f.read()
 
