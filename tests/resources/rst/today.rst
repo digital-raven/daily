@@ -1,13 +1,14 @@
-today
-=====
+=======
+ today
+=======
 Today is today
 
 today heading
--------------
+=============
 heading body
 
 second heading
---------------
+==============
 heading body
 
 multiline
