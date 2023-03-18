@@ -80,7 +80,7 @@ def do_add(args):
             entry.headings['notes'] = ''
 
     # Create tmp file and pre-load it with RST for editing.
-    _, path = tempfile.mkstemp(suffix=f'.{args.entry_format}')
+    _, path = tempfile.mkstemp(suffix=f'.{args.entry_format}', dir=args.journal)
 
     try:
         text = entries_to_str(old_entries, args.entry_format)
