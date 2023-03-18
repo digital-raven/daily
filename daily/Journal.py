@@ -37,7 +37,7 @@ def get_title_from_date(date):
     Raises:
         ValueError if date could not be parsed.
     """
-    cal = pdt.Calendar()
+    cal = pdt.Calendar(version=pdt.VERSION_FLAG_STYLE)
     d, flag = cal.parse(date)
 
     if not flag:

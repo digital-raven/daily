@@ -19,7 +19,7 @@ install_requires = []
 if 'DEBBUILD' not in os.environ:
     install_requires = [
         'argcomplete >= 1.0',
-        'parsedatetime',
+        'parsedatetime==2.5',
     ]
 
 version=sp.check_output(['git','describe','--tags'], text=True).strip()
