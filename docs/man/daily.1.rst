@@ -22,7 +22,7 @@ Use the ``daily add`` command to add new entries or modify existing entries,
 and the ``daily show`` command to go back to view those entries. Daily can also
 be used to show upcoming events with the ``dailiy upcoming`` command. This
 command will show entries in the near future if an entry has content added under
-an "events" heading. Each subcommand has its own manual page with more detail.
+an "todo" heading. Each subcommand has its own manual page with more detail.
 
 OPTIONS
 =======
@@ -39,28 +39,33 @@ These global options must be specified before the subcommand.
         Specify the directory to store entries. The default journal is located
         in ~/.local/share/daily/
 
+**-f, --entry-format** *FORMAT*
+        What text format to use when displaying or editing entries. Choices are
+         "md" or "rst".
+
 **--version**
         Display the version of daily.
 
 JOURNAL FORMAT
 ==============
-Daily works by modifying and reading a entries from a directory. It is not
-expected for a user to modify the journal file themselves; leave it to the
-"add" command. The journal file is in json format, and follows the structure
-below.
+Daily works by modifying and reading entries from a directory. The entries
+may be in RST or markdown format. Each entry also has some metadata that may be
+written at the bottom in yaml format. The following is an example in markdown.
 
 ::
 
-    2021-07-06, Tues
-    ================
+    # 2021-07-06, Tues
     Notes appear just below the title.
 
-    Work
-    ----
-    And some stuff happened at work.
+    ## todo
 
-    id: f559323bea5b7acf9f2e9e7ffd4871ff915e0956-2021-7-19_13-44-39-905973
-    tags: work
+    - [X] Get groceries
+
+
+    <!--- attributes --->
+        ---
+        id: internal-id
+        tags: [tags, go, here]
 
 And the "add" subcommand allows users to modify entries by editing the
 generated text.
