@@ -23,10 +23,10 @@ if 'DEBBUILD' not in os.environ:
 
 setup(
     name='daily-cli',
-    version='2.0.0',
+    version='2.0.1',
     description='Command-line notebook for daily entries.',
     long_description=long_description,
-    long_description_content_type='text/markdown',
+    long_description_content_type='text/x-rst',
     url='https://github.com/OneRedDime/daily',
     author='OneRedDime',
     author_email='onereddime@protonmail.com',
