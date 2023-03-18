@@ -39,7 +39,7 @@ def create_parser():
 
     parser.add_argument(
         '-j', '--journal',
-        help='Specify the journal to operate on.')
+        help='Journal directory.')
 
     parser.add_argument(
         '-f', '--entry-format', choices=['md', 'rst'],
