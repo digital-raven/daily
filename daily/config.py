@@ -8,18 +8,18 @@ from pathlib import Path
 
 home = Path.home()
 
-default_conf = '/etc/daily/default.ini'
 user_confdir = f'{home}/.config/daily'
 user_conf = f'{user_confdir}/daily.ini'
 
 
 default = f"""\
 [default]
+
 # Path to journal
 journal = {home}/.local/share/daily
 
 # Store entries as md or rst
-entry_format = rst
+entry_format = md
 """
 
 
@@ -40,7 +40,7 @@ def get_defaults():
 
 
 def do_first_time_setup():
-    """ Copy default.ini to user conf path.
+    """ Create default ini in user conf path.
     """
     try:
         os.makedirs(user_confdir)

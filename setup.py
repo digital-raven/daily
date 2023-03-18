@@ -39,9 +39,8 @@ setup(
     python_requires='>=3, <4',
     install_requires=install_requires,
     data_files=[
-        ('/etc/daily', ['etc/default.ini']),
-        ('/etc/bash_completion.d', ['etc/daily_completion.sh']),
-        ('/usr/share/man/man1', manfiles),
+        ('etc/bash_completion.d', ['etc/daily_completion.sh']),
+        ('usr/share/man/man1', manfiles),
     ],
     entry_points={
         'console_scripts': [
