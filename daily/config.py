@@ -33,11 +33,9 @@ def get_defaults():
         A dictionary that contains all expected entries for a
         configuration file.
     """
-    return {
-        'journal': f'journal = {home}/.local/share/daily',
-        'entry_format': 'rst',
-    }
-
+    c = configparser.ConfigParser()
+    c.read_string(default)
+    return dict(c['default'])
 
 def do_first_time_setup():
     """ Create default ini in user conf path.
