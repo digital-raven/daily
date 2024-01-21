@@ -43,6 +43,15 @@ OPTIONS
 =======
 These options must be specified after the subcommand.
 
+**--copy-previous** *date*
+        Create a new entry by copying from a previous entry, making it easier
+        to keep up with goals and remember what **you said you would do**.
+
+        *date* may be a date in some formal format or a plain english phrase
+        like "yesterday" or "last week".  If an entry on this date is not
+        found, then daily will walk up to a year back from *date* and pick the
+        first entry it finds.
+
 **-h**, **--help**
         Display a help message and exit.
 

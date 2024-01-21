@@ -70,11 +70,44 @@ def main(args):
         args.date = 'today'
 
     if args.date:
-        new_zet = _get_filepath(args.date, args.journal, args.entry_format)
+        new_zet_path = _get_filepath(args.date, args.journal, args.entry_format)
+
+        # If copying a previous entry
+        class _MockArgsCopyPrevious:
+            def __init__(self, args):
+                self._args = args
+                self.after = f'{args.copy_previous} - 1 year'
+                self.before = args.copy_previous
+
+            def __getattr__(self, key):
+                """ If not referring to any SuperDate attrs then forward to date.
+                """
+                if key in self.__dict__:
+                    return self.__dict__[key]
+                else:
+                    return self._args.__getattribute__(key)
+
+        # Set up information for new entry.
+        title = args.date
+        headings = None
+        attrs = None
+        zettel_format = args.entry_format
+        no_edit = True
+
+        if args.copy_previous:
+            try:
+                prev_zet = sorted(
+                    load_entries(_MockArgsCopyPrevious(args)),
+                    key=lambda x: x.title)[-1]
+                headings = prev_zet.headings
+                attrs = prev_zet.attrs
+            except IndexError:  # No zettels found.
+                pass
+
         try:
-            z = create_zettel(new_zet, title=args.date, zettel_format=args.entry_format, no_edit=True)
+            z = create_zettel(new_zet_path, '', title, headings, attrs, zettel_format, no_edit)
         except FileExistsError:
-            z = load_zettels(new_zet, args.entry_format)[0]
+            z = load_zettels(new_zet_path, args.entry_format)[0]
 
         _correct_entry(z, args)
 
