@@ -23,7 +23,7 @@ if 'DEBBUILD' not in os.environ:
 
 setup(
     name='daily-cli',
-    version='2.0.2',
+    version='2.1.0',
     description='Command-line notebook for daily entries.',
     long_description=long_description,
     long_description_content_type='text/x-rst',
