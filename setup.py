@@ -8,9 +8,9 @@ here = path.abspath(path.dirname(__file__))
 with open(path.join(here, 'README.rst'), 'r', encoding='utf-8') as f:
     long_description = f.read()
 
-# Find man pages.
+# Find man pages. todo: Why doesn't "here" work for 'r' is os.walk?
 manfiles = []
-for r, d, f in os.walk(path.join(here, 'docs', 'man')):
+for r, d, f in os.walk(path.join('./', 'docs', 'man')):
     manfiles = [path.join(r, f) for f in f if f.endswith('.1.gz')]
     break
 
