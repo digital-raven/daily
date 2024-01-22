@@ -6,12 +6,21 @@ All notable changes to daily will be documented in this file.
 The format is based on `Keep a Changelog <https://keepachangelog.com/en/1.0.0/>`_,
 and this project adheres to `Semantic Versioning <https://semver.org/spec/v2.0.0.html>`_.
 
-[unreleased]
-============
+[2.1.0 - 2024-01-22]
+====================
+Daily has a new feature! Check it out!
+
+Added
+-----
+- copy-previous feature. Should make it easier to keep track of weekly or
+  monthly semi-persistent information. Stuff like general day-to-day habits,
+  addresses, producivity and health goals.
+
+  Check out ``etc/sample-snapshot.md`` for an example starting point.
 
 Fixed
 -----
-- Corrected default string in config.
+- Manpage installation (at least on my system)
 
 [2.0.2] - 2023-01-19
 ====================
