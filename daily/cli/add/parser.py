@@ -15,15 +15,14 @@ def add_subparser(subparsers):
               Only compatible with -d option."""))
 
     sp.add_argument(
-        '--copy-previous', default='',
+        '--copy-previous', default='', const='yesterday', nargs='?',
         help=("""Copy the content from a previous entry. Plain english date
-              phrases are accepted.
+              phrases are accepted. If this option is provided with no
+              argument then its value defaults to "yesterday".
 
               The idea is to create a large file with information that you want
               to see regularly but don't update frequently. This makes it easier
-              to review general day patterns, weight, or weekly goals.
-
-              This option may also be set in ~/.config/daily/daily.ini """))
+              to review general day patterns, weight, or weekly goals."""))
 
     sp.add_argument(
         'headings', metavar='HEADING',
