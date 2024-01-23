@@ -76,7 +76,7 @@ And an example in RST.
         tags: []
 
 Usage with Vimwiki 
--------------------
+------------------
 Modify daily.ini (installed in ``~/.config/daily`` after a first run) to change
 the journal's directory to your vimwiki diary, and be sure the format is "md".
 

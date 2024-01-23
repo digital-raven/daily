@@ -2,11 +2,11 @@
 # Put this file in ~/.vim/bin/ . Will generate the template text
 # when creating new journal entries using vim or vimwiki.
 #
-# Also put this at the end of your vimrc
+# Also add this line to the end of your vimrc, then modify the pathing
+# for your machine.
 #
 #  au BufNewFile ~/vimwiki/diary/*.md :silent 0r !~/.vim/bin/generate-vimwiki-diary-template '%'
 #
-# But use appropraite paths and stuff.
 
 date=$1
 if [ -z $date ]
@@ -14,4 +14,5 @@ then
     date='today'
 fi
 
+# Pairs well --copy-previous
 daily add --no-edit -d "$date"
