@@ -26,4 +26,4 @@ def main(args):
         print(f'ERROR: "{args.journal}" contains invalid entries. {e}')
         sys.exit(1)
 
-    print(zettels_to_str(entries, args.entry_format, args.headings))
+    print(zettels_to_str([e for e in entries if e.title], args.entry_format, args.headings))
