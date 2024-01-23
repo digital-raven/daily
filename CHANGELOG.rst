@@ -6,6 +6,29 @@ All notable changes to daily will be documented in this file.
 The format is based on `Keep a Changelog <https://keepachangelog.com/en/1.0.0/>`_,
 and this project adheres to `Semantic Versioning <https://semver.org/spec/v2.0.0.html>`_.
 
+[2.1.1 - 2024-01-23]
+====================
+Removed the default inclusion of 'copy-previous' in the config file. Usage
+proved far too annoying to maintain and reason about.
+
+The setting will still work if supplied in the config, so removing the default
+isn't a breaking change.
+
+There are other fixes too.
+
+Added
+-----
+- Better default behavior for copy-previous
+
+Fixed
+-----
+- add and show properly reason about titleless entries. show will skip 
+  them and add properly corrects them.
+
+Removed
+-------
+- copy-previous from config
+
 [2.1.0 - 2024-01-22]
 ====================
 Daily has a new feature! Check it out!
