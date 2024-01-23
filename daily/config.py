@@ -23,14 +23,6 @@ journal = {home}/.local/share/daily
 
 # Store entries as md or rst
 entry_format = md
-
-# Create new entries by copying a previous entry referenced by a date.
-# Plain english date strings are accepted; like "last week".
-#
-# If the entry doesn't exist, then daily will walk backwards up to a year
-# until it finds one. If that doesn't happen then a simple blank entry will
-# be created.
-copy_previous =
 """
 
 
