@@ -38,6 +38,10 @@ def _correct_entry(z, args):
     # Sync date and filepath
     z.title = get_title_from_date(z.title)
 
+    # If no title present, try using the file name itself.
+    if not z.title.strip():
+        z.title = get_title_from_date(Path(z.attrs['_loadpath']).stem)
+
     exp_path = _get_filepath(z.title, args.journal, args.entry_format)
     if '_loadpath' not in z.attrs:
         z.attrs['_loadpath'] = exp_path
