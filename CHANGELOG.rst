@@ -6,6 +6,22 @@ All notable changes to daily will be documented in this file.
 The format is based on `Keep a Changelog <https://keepachangelog.com/en/1.0.0/>`_,
 and this project adheres to `Semantic Versioning <https://semver.org/spec/v2.0.0.html>`_.
 
+[2.1.3 - 2026-05-30]
+====================
+No practical changes. The upstream repo was found to lack a mention of a
+release "2.1.2", but one such release was found on PyPi.
+
+This "release" simply establishes a consistent mark between the
+available artifact and the source code.
+
+Added
+-----
+- shell.nix for building on nix systems.
+
+Tested
+------
+The code matches release of daily-cli-2.1.2 on PiPy.
+
 [2.1.1 - 2024-01-23]
 ====================
 Removed the default inclusion of 'copy-previous' in the config file. Usage
